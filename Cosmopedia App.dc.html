@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#050609;font-family:'Space Grotesk',system-ui,sans-serif;color:#eceef3}
+a{color:#f0b46a;text-decoration:none}a:hover{color:#ffd29c}
+*{box-sizing:border-box}
+::-webkit-scrollbar{width:0;height:0}
+input::placeholder{color:#6b7180}
+</style>
+<script src="cosmos-data.js"></script>
+<script src="astro.js"></script>
+<script src="i18n.js"></script>
+</helmet>
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;gap:48px;flex-wrap:wrap">
+
+<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);width:390px;height:844px;border-radius:46px;border:10px solid #1a1c23;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.6)">
+
+  <div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font:500 12px 'IBM Plex Mono',monospace;color:var(--text2)">
+    <span>9:41</span><span style="width:90px;height:22px;border-radius:12px;background:#000"></span><span>5G ▮▮▮</span>
+  </div>
+
+  <div style="flex:1;overflow-y:auto;overflow-x:hidden">
+
+    <sc-if value="{{ isExplore }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div>
+            <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.enc }}</div>
+            <div style="font-size:30px;font-weight:700;letter-spacing:-.02em">Cosmopedia</div>
+          </div>
+          <div style="font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ objCount }} {{ tx.entries }}</div>
+        </div>
+
+        <input value="{{ q }}" onChange="{{ onSearch }}" placeholder="{{ tx.search }}" style="width:100%;height:46px;border-radius:14px;border:1px solid rgba(var(--ink),.08);background:var(--surface);color:var(--text);padding:0 16px;font:400 15px 'Space Grotesk',sans-serif;outline:none">
+
+        <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px">
+          <sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+            <sc-if value="{{ c.active }}">
+              <button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:none;background:var(--amber);color:var(--on-accent);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ c.label }}</button>
+            </sc-if>
+            <sc-if value="{{ c.inactive }}">
+              <button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ c.label }}</button>
+            </sc-if>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ true }}">
+          <div onClick="{{ featured.open }}" style="position:relative;height:220px;border-radius:22px;overflow:hidden;cursor:pointer;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+            <sc-for list="{{ featuredImg }}" as="im" hint-placeholder-count="0"><div style="position:absolute;inset:0;background-image:{{ im.bg }};background-size:cover;background-position:center"></div></sc-for>
+            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0) 35%,rgba(0,0,0,.85))"></div>
+            <div style="position:absolute;left:18px;right:18px;bottom:16px;display:flex;flex-direction:column;gap:4px">
+              <span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#f0b46a;text-transform:uppercase">{{ tx.ootd }} · {{ featured.catLabel }}</span>
+              <span style="font-size:26px;font-weight:700;letter-spacing:-.01em;color:#fff">{{ featured.name }}</span>
+              <span style="font-size:13px;color:rgba(255,255,255,.85)">{{ featured.tagline }}</span>
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <sc-for list="{{ exploreFeed }}" as="o" hint-placeholder-count="6">
+            <sc-if value="{{ o.isAd }}">
+              <div style="grid-column:1/-1;border-radius:14px;border:1px dashed rgba(var(--ink),.18);height:100px;display:flex;align-items:center;justify-content:center;gap:8px;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted);background:var(--surface2)"><span style="color:var(--amber)">AD</span> Banner · 300×100 · AdMob</div>
+            </sc-if>
+            <sc-if value="{{ o.isObj }}">
+            <div onClick="{{ o.open }}" style="border-radius:18px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--ink),.06);cursor:pointer" style-hover="border-color:rgba(240,180,106,.5)">
+              <div style="position:relative;height:118px;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+                <sc-if value="{{ o.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ o.img }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+              </div>
+              <div style="padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px">
+                <span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">{{ o.catLabel }}</span>
+                <span style="font-size:16px;font-weight:600">{{ o.name }}</span>
+              </div>
+            </div>
+            </sc-if>
+          </sc-for>
+        </div>
+        <sc-if value="{{ noResults }}"><div style="text-align:center;color:var(--muted);font-size:14px;padding:30px 0">{{ tx.nothing }}</div></sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isNews }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div>
+            <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.liveFeed }}</div>
+            <div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.newsTitle }}</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <sc-if value="{{ alertsOn }}"><button onClick="{{ toggleAlerts }}" style="height:34px;padding:0 12px;border-radius:17px;border:none;background:var(--blue);color:var(--on-blue);font:600 12px 'IBM Plex Mono',monospace;cursor:pointer">{{ tx.alertsOn }}</button></sc-if>
+            <sc-if value="{{ alertsOff }}"><button onClick="{{ toggleAlerts }}" style="height:34px;padding:0 12px;border-radius:17px;border:1px solid rgba(143,184,255,.5);background:transparent;color:var(--blue);font:500 12px 'IBM Plex Mono',monospace;cursor:pointer">{{ tx.alertsOff }}</button></sc-if>
+            <button onClick="{{ refreshNews }}" style="height:34px;padding:0 12px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 12px 'IBM Plex Mono',monospace;cursor:pointer">↻</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px">
+          <sc-for list="{{ newsFilters }}" as="c" hint-placeholder-count="6">
+            <sc-if value="{{ c.active }}">
+              <button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:none;background:var(--blue);color:var(--on-blue);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ c.label }}</button>
+            </sc-if>
+            <sc-if value="{{ c.inactive }}">
+              <button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ c.label }}</button>
+            </sc-if>
+          </sc-for>
+        </div>
+
+        <sc-if value="{{ newsErr }}"><div style="padding:16px;border-radius:14px;background:var(--err-bg);color:var(--err);font-size:14px">{{ tx.newsErr }}</div></sc-if>
+
+        <sc-for list="{{ newsItems }}" as="n" hint-placeholder-count="4">
+          <sc-if value="{{ n.isAd }}">
+            <div style="border-radius:18px;border:1px dashed rgba(var(--ink),.18);padding:14px;display:flex;gap:12px;align-items:center;background:var(--surface2)">
+              <div style="width:64px;height:64px;border-radius:12px;flex:none;background:repeating-linear-gradient(135deg,var(--stripe1) 0 6px,var(--surface) 6px 12px)"></div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+                <span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--amber)">{{ tx.sponsored }}</span>
+                <span style="font-size:14px;color:var(--text2)">{{ tx.nativeAd }}</span>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ n.isArticle }}">
+            <div onClick="{{ n.open }}" style="display:flex;gap:14px;cursor:pointer;padding-bottom:16px;border-bottom:1px solid rgba(var(--ink),.06)">
+              <div style="position:relative;width:96px;height:96px;flex:none;border-radius:14px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+                <sc-if value="{{ n.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ n.img }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                <span style="font:500 10px 'IBM Plex Mono',monospace;color:var(--blue);letter-spacing:.06em">{{ n.site }} · {{ n.ago }}</span>
+                <span style="font-size:15px;font-weight:600;line-height:1.3;text-wrap:pretty;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ n.title }}</span>
+              </div>
+            </div>
+          </sc-if>
+        </sc-for>
+
+        <sc-if value="{{ newsLoading }}"><div style="text-align:center;color:var(--muted);font:500 12px 'IBM Plex Mono',monospace;padding:14px">{{ tx.loadingNews }}</div></sc-if>
+        <sc-if value="{{ canLoadMore }}">
+          <button onClick="{{ loadMore }}" style="height:46px;border-radius:14px;border:1px solid rgba(var(--ink),.1);background:var(--surface);color:var(--text);font:500 14px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.loadMore }}</button>
+        </sc-if>
+        <div style="text-align:center;color:var(--muted2);font:400 10.5px 'IBM Plex Mono',monospace">{{ tx.newsSource }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isToday }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <div>
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ todayLabel }}</div>
+          <div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.todayTitle }}</div>
+        </div>
+
+        <div style="border-radius:22px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--ink),.06)">
+          <div style="position:relative;height:300px;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+            <sc-for list="{{ apodImg }}" as="im" hint-placeholder-count="0"><div onClick="{{ im.open }}" style="position:absolute;inset:0;background-image:{{ im.bg }};background-size:cover;background-position:center;cursor:zoom-in"></div></sc-for>
+            <sc-if value="{{ apod.isVideo }}"><a href="{{ apod.url }}" target="_blank" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font:500 13px 'IBM Plex Mono',monospace">{{ tx.watchVideo }}</a></sc-if>
+          </div>
+          <div style="padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px">
+            <span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--amber)">{{ tx.apodLabel }}</span>
+            <span style="font-size:20px;font-weight:600;line-height:1.2">{{ apod.title }}</span>
+            <span style="font-size:14px;line-height:1.55;color:var(--text3);text-wrap:pretty">{{ apod.text }}</span>
+          </div>
+        </div>
+
+        <div onClick="{{ openMoon }}" style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:14px 16px;display:flex;align-items:center;gap:16px;cursor:pointer" style-hover="border-color:rgba(240,180,106,.4)">
+          <div style="position:relative;width:56px;height:56px;flex:none;border-radius:50%;overflow:hidden;background:var(--moon-dark)">
+  <div style="position:absolute;top:0;height:100%;width:50%;left:{{ moonNow.halfLeft }};background:#e9e4d6"></div>
+  <div style="position:absolute;top:0;height:100%;left:50%;width:{{ moonNow.ellW }};transform:translateX(-50%);border-radius:50%;background:{{ moonNow.ellC }}"></div>
+</div>
+          <div style="flex:1;display:flex;flex-direction:column;gap:3px">
+            <span style="font:500 10px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--amber)">{{ tx.moonTonight }}</span>
+            <span style="font-size:17px;font-weight:600">{{ moonNow.name }}</span>
+            <span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ moonNow.illum }} {{ tx.lit }} · {{ tx.fullMoon }} {{ moonNow.nextFull }}</span>
+          </div>
+          <span style="color:var(--muted)">→</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.otdTitle }}</div>
+          <sc-if value="{{ otdLoading }}"><div style="font-size:14px;color:var(--muted)">{{ tx.loadingHistory }}</div></sc-if>
+          <sc-for list="{{ otd }}" as="e" hint-placeholder-count="3">
+            <div style="display:flex;gap:14px;padding:12px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06)">
+              <div style="position:relative;width:60px;height:60px;flex:none;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+                <sc-if value="{{ e.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ e.img }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:4px">
+                <span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--amber)">{{ e.year }} · {{ e.ago }}</span>
+                <span style="font-size:14px;line-height:1.45;color:var(--text2);text-wrap:pretty">{{ e.text }}</span>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ otdFallback }}"><div style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted2)">{{ tx.otdFallback }}</div></sc-if>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.launchesTitle }}</div>
+          <sc-if value="{{ launchErr }}"><div style="font-size:14px;color:var(--muted)">{{ tx.launchErr }}</div></sc-if>
+          <sc-for list="{{ launches }}" as="l" hint-placeholder-count="3">
+            <div style="display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--surface);border:1px solid rgba(var(--ink),.06)">
+              <div style="position:relative;width:56px;height:56px;flex:none;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stripe1) 0 6px,var(--surface) 6px 12px)">
+                <div style="position:absolute;inset:0;background-image:{{ l.bg }};background-size:cover;background-position:center"></div>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px">
+                <span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.name }}</span>
+                <span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ l.provider }} · {{ l.pad }}</span>
+              </div>
+              <div style="text-align:right;flex:none;display:flex;flex-direction:column;gap:3px">
+                <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--blue)">{{ l.when }}</span>
+                <span style="font:400 10px 'IBM Plex Mono',monospace;color:var(--muted)">{{ l.status }}</span>
+                <sc-if value="{{ l.reminded }}"><button onClick="{{ l.remind }}" style="margin-top:4px;height:26px;padding:0 10px;border-radius:13px;border:none;background:var(--blue);color:var(--on-blue);font:600 11px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.reminded }}</button></sc-if>
+                <sc-if value="{{ l.notReminded }}"><button onClick="{{ l.remind }}" style="margin-top:4px;height:26px;padding:0 10px;border-radius:13px;border:1px solid rgba(143,184,255,.5);background:transparent;color:var(--blue);font:500 11px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.remind }}</button></sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isQuiz }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div>
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ todayLabel }}</div>
+          <div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.quizTitle }}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(var(--ink),.07);border-radius:16px;overflow:hidden">
+          <div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.streak }}</span><span style="font-size:22px;font-weight:700;color:var(--amber)">{{ quiz.streak }}<span style="font-size:12px;font-weight:500;color:var(--muted)"> {{ tx.days }}</span></span></div>
+          <div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.best }}</span><span style="font-size:22px;font-weight:700">{{ quiz.best }}</span></div>
+          <div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.todayCap }}</span><span style="font-size:22px;font-weight:700">{{ quiz.scoreLabel }}</span></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+          <sc-for list="{{ quiz.levels }}" as="lv" hint-placeholder-count="3">
+            <sc-if value="{{ lv.active }}"><button onClick="{{ lv.pick }}" style="height:52px;border-radius:14px;border:none;background:var(--amber);color:var(--on-accent);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px"><span style="font:600 14px 'Space Grotesk',sans-serif">{{ lv.label }}</span><span style="font:500 10px 'IBM Plex Mono',monospace">{{ lv.status }}</span></button></sc-if>
+            <sc-if value="{{ lv.inactive }}"><button onClick="{{ lv.pick }}" style="height:52px;border-radius:14px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px" style-hover="background:var(--hover)"><span style="font:500 14px 'Space Grotesk',sans-serif">{{ lv.label }}</span><span style="font:400 10px 'IBM Plex Mono',monospace;color:var(--muted)">{{ lv.status }}</span></button></sc-if>
+          </sc-for>
+        </div>
+        <div onClick="{{ openBadges }}" style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:14px;background:rgba(240,180,106,.08);cursor:pointer">
+          <span style="font-size:14px"><span style="color:var(--amber);font-weight:600">{{ rank.name }}</span> · {{ rank.xp }} XP</span>
+          <span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--amber)">{{ rank.badgeCount }} {{ tx.badgesArrow }}</span>
+        </div>
+
+        <sc-if value="{{ quiz.playing }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)"><span>{{ tx.question }} {{ quiz.qnum }} / 5</span><span style="color:var(--blue);text-transform:uppercase">{{ quiz.topicCat }}</span></div>
+            <div style="height:4px;border-radius:2px;background:rgba(var(--ink),.08);overflow:hidden"><div style="height:100%;width:{{ quiz.pct }};background:var(--amber);transition:width .3s"></div></div>
+          </div>
+          <div style="font-size:23px;font-weight:600;line-height:1.25;letter-spacing:-.01em;text-wrap:pretty">{{ quiz.question }}</div>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ quiz.answers }}" as="a" hint-placeholder-count="4">
+              <sc-if value="{{ a.normal }}">
+                <button onClick="{{ a.pick }}" style="display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 16px;border-radius:16px;border:1px solid rgba(var(--ink),.1);background:var(--surface);color:var(--text);font:500 15.5px 'Space Grotesk',sans-serif;text-align:left;cursor:pointer" style-hover="border-color:var(--amber);background:var(--hover)"><span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ a.letter }}</span>{{ a.t }}</button>
+              </sc-if>
+              <sc-if value="{{ a.correct }}">
+                <div style="display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 16px;border-radius:16px;border:1px solid var(--green);background:rgba(127,214,160,.12);color:var(--text);font:600 15.5px 'Space Grotesk',sans-serif"><span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--green)">✓</span>{{ a.t }}</div>
+              </sc-if>
+              <sc-if value="{{ a.wrong }}">
+                <div style="display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 16px;border-radius:16px;border:1px solid var(--red);background:rgba(255,155,155,.1);color:var(--text);font:500 15.5px 'Space Grotesk',sans-serif"><span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--red)">✕</span>{{ a.t }}</div>
+              </sc-if>
+              <sc-if value="{{ a.dim }}">
+                <div style="display:flex;align-items:center;gap:14px;min-height:56px;padding:10px 16px;border-radius:16px;border:1px solid rgba(var(--ink),.05);background:transparent;color:var(--muted2);font:500 15.5px 'Space Grotesk',sans-serif"><span style="font:500 12px 'IBM Plex Mono',monospace">{{ a.letter }}</span>{{ a.t }}</div>
+              </sc-if>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:8px">
+            <sc-if value="{{ quiz.canHint }}"><button onClick="{{ quiz.hint }}" style="flex:1;height:46px;border-radius:14px;border:1px dashed rgba(240,180,106,.5);background:transparent;color:var(--amber);font:500 12.5px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:rgba(240,180,106,.08)">{{ tx.hintBtn }}</button></sc-if>
+            <sc-if value="{{ quiz.canSkip }}"><button onClick="{{ quiz.skip }}" style="flex:1;height:46px;border-radius:14px;border:1px dashed rgba(143,184,255,.5);background:transparent;color:var(--blue);font:500 12.5px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:rgba(143,184,255,.08)">{{ tx.skipBtn }}</button></sc-if>
+          </div>
+          <sc-if value="{{ quiz.retrying }}">
+            <div style="border-radius:18px;background:rgba(255,155,155,.08);border:1px solid rgba(255,155,155,.3);padding:14px 18px;display:flex;flex-direction:column;gap:4px">
+              <span style="font:600 12px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:var(--red)">{{ tx.tryAgain }}</span>
+              <span style="font-size:14px;line-height:1.5;color:var(--text2)">{{ tx.tryAgainSub }}</span>
+            </div>
+          </sc-if>
+          <sc-if value="{{ quiz.answered }}">
+            <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:16px 18px;display:flex;flex-direction:column;gap:10px">
+              <span style="font:600 12px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:var(--green)">{{ quiz.solvedLabel }}</span>
+              <span style="font-size:14.5px;line-height:1.5;color:var(--text2);text-wrap:pretty">{{ quiz.why }}</span>
+              <button onClick="{{ quiz.next }}" style="margin-top:4px;height:48px;border-radius:14px;border:none;background:var(--amber);color:var(--on-accent);font:600 15px 'Space Grotesk',sans-serif;cursor:pointer">{{ quiz.nextLabel }}</button>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ quiz.finished }}">
+          <div style="border-radius:22px;padding:24px 20px;background:var(--surface);border:1px solid rgba(240,180,106,.3);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+            <span style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--amber)">{{ tx.todayScore }}</span>
+            <span style="font-size:56px;font-weight:700;letter-spacing:-.03em;line-height:1.05">{{ quiz.score }}<span style="font-size:26px;color:var(--muted)">/5</span></span>
+            <span style="font-size:15px;color:var(--text2)">{{ quiz.msg }}</span>
+            <span style="margin-top:8px;font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ tx.newQsIn }} {{ quiz.nextIn }}</span>
+            <button onClick="{{ quiz.share }}" style="margin-top:10px;height:42px;padding:0 20px;border-radius:21px;border:none;background:var(--amber);color:var(--on-accent);font:600 14px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.shareScore }}</button>
+          </div>
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.review }}</div>
+          <sc-for list="{{ quiz.review }}" as="r" hint-placeholder-count="5">
+            <div style="display:flex;gap:12px;padding-bottom:14px;border-bottom:1px solid rgba(var(--ink),.06)">
+              <sc-if value="{{ r.ok }}"><span style="flex:none;width:22px;height:22px;border-radius:11px;background:rgba(127,214,160,.15);color:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px">✓</span></sc-if>
+              <sc-if value="{{ r.bad }}"><span style="flex:none;width:22px;height:22px;border-radius:11px;background:rgba(255,155,155,.12);color:var(--red);display:flex;align-items:center;justify-content:center;font-size:12px">✕</span></sc-if>
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                <span style="font-size:14.5px;font-weight:500;line-height:1.35">{{ r.q }}</span>
+                <span style="font:400 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ tx.answer }}: {{ r.correct }}</span>
+                <sc-if value="{{ r.hasTopic }}"><span onClick="{{ r.open }}" style="font-size:13px;color:var(--amber);cursor:pointer">{{ tx.readAbout }} {{ r.topic }} →</span></sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSaved }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div>
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.library }}</div>
+          <div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.savedTitle }}</div>
+        </div>
+        <sc-if value="{{ savedEmpty }}">
+          <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:28px 20px;text-align:center;display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:17px;font-weight:600">{{ tx.nothingSaved }}</span>
+            <span style="font-size:14px;color:var(--muted);line-height:1.5">{{ tx.nothingSavedSub }}</span>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasReminders }}">
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.remTitle }}</div>
+          <sc-for list="{{ reminders }}" as="r" hint-placeholder-count="1">
+            <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06)">
+              <span style="width:8px;height:8px;flex:none;background:var(--blue);transform:rotate(45deg)"></span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.name }}</span>
+                <span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ r.when }} · {{ tx.alertBefore }}</span>
+              </div>
+              <button onClick="{{ r.remove }}" style="height:28px;padding:0 10px;border-radius:14px;border:1px solid rgba(var(--ink),.12);background:transparent;color:var(--text2);font:500 11px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.remove }}</button>
+            </div>
+          </sc-for>
+        </sc-if>
+        <sc-if value="{{ hasSavedTopics }}">
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.topics }} · {{ savedTopicCount }}</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <sc-for list="{{ savedTopics }}" as="o" hint-placeholder-count="2">
+              <div onClick="{{ o.open }}" style="border-radius:18px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--ink),.06);cursor:pointer">
+                <div style="position:relative;height:100px;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+                  <sc-if value="{{ o.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ o.img }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+                </div>
+                <div style="padding:10px 12px 12px;display:flex;flex-direction:column;gap:2px">
+                  <span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">{{ o.catLabel }}</span>
+                  <span style="font-size:15px;font-weight:600">{{ o.name }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ hasSavedArticles }}">
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.stories }} · {{ savedArticleCount }}</div>
+          <sc-for list="{{ savedArticles }}" as="n" hint-placeholder-count="2">
+            <div onClick="{{ n.open }}" style="display:flex;gap:14px;cursor:pointer;padding-bottom:14px;border-bottom:1px solid rgba(var(--ink),.06)">
+              <div style="position:relative;width:76px;height:76px;flex:none;border-radius:12px;overflow:hidden;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+                <sc-if value="{{ n.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ n.img }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+              </div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:5px">
+                <span style="font:500 10px 'IBM Plex Mono',monospace;color:var(--blue)">{{ n.site }} · {{ n.ago }}</span>
+                <span style="font-size:14.5px;font-weight:600;line-height:1.3;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">{{ n.title }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSky }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ todayLabel }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.skyTitle }}</div></div>
+        <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:12px 14px;display:flex;align-items:center;gap:12px">
+          <span style="width:8px;height:8px;flex:none;background:var(--blue);transform:rotate(45deg)"></span>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">{{ sky.place }}</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ sky.coords }}</span></div>
+          <button onClick="{{ sky.locate }}" style="height:32px;padding:0 12px;border-radius:16px;border:1px solid rgba(143,184,255,.5);background:transparent;color:var(--blue);font:500 12px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.useLoc }}</button>
+        </div>
+        <sc-if value="{{ sky.noDark }}"><div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:16px;font-size:14px;line-height:1.5;color:var(--text2)">{{ tx.noDark }}</div></sc-if>
+        <sc-if value="{{ sky.hasDark }}">
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(var(--ink),.07);border-radius:16px;overflow:hidden"><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.darkFrom }}</span><span style="font-size:17px;font-weight:600">{{ sky.darkStart }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.until }}</span><span style="font-size:17px;font-weight:600">{{ sky.darkEnd }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.moonCap }}</span><span style="font-size:17px;font-weight:600">{{ sky.moonIllum }}</span></div></div>
+          <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.visTonight }}</div>
+          <sc-for list="{{ sky.planets }}" as="p" hint-placeholder-count="3">
+            <div onClick="{{ p.open }}" style="display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);cursor:pointer" style-hover="border-color:rgba(143,184,255,.4)">
+              <span style="width:28px;height:28px;flex:none;border-radius:50%;background:{{ p.color }}"></span>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:3px"><span style="font-size:15px;font-weight:600">{{ p.name }}</span><span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ p.when }} · {{ tx.look }} {{ p.dir }} · {{ tx.upTo }} {{ p.alt }}°</span></div>
+              <span style="font:500 10px 'IBM Plex Mono',monospace;color:var(--blue);text-align:right">{{ p.eye }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ sky.none }}"><div style="font-size:14px;color:var(--muted)">{{ tx.noPlanets }}</div></sc-if>
+          <button onClick="{{ sky.share }}" style="height:44px;border-radius:14px;border:1px solid rgba(var(--ink),.1);background:var(--surface);color:var(--text);font:500 14px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.shareSky }}</button>
+        </sc-if>
+        <div style="display:flex;justify-content:space-between;align-items:center"><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.issLive }}</div><span style="font:500 10px 'IBM Plex Mono',monospace;color:var(--green)">{{ tx.live }}</span></div>
+        <iframe src="iss-map.html?lat={{ sky.lat }}&amp;lon={{ sky.lon }}" title="ISS live map" style="width:100%;height:190px;border:0;border-radius:16px;background:var(--surface2);display:block"></iframe>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(var(--ink),.07);border-radius:16px;overflow:hidden"><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.position }}</span><span style="font-size:17px;font-weight:600">{{ iss.pos }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.altitude }}</span><span style="font-size:17px;font-weight:600">{{ iss.alt }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.speed }}</span><span style="font-size:17px;font-weight:600">{{ iss.speed }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.fromYou }}</span><span style="font-size:17px;font-weight:600;color:var(--blue)">{{ iss.dist }}</span></div></div>
+        <div style="font-size:13px;color:var(--muted)">{{ iss.status }}</div>
+        <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:12px 14px;display:flex;align-items:center;gap:12px">
+          <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">{{ tx.issAlerts }}</span><span style="font-size:12.5px;color:var(--muted)">{{ tx.issAlertsSub }}</span></div>
+          <sc-if value="{{ issAlertsOn }}"><button onClick="{{ toggleIssAlerts }}" style="width:46px;height:28px;flex:none;border-radius:14px;border:none;background:var(--blue);position:relative;cursor:pointer"><span style="position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:11px;background:var(--bg)"></span></button></sc-if>
+<sc-if value="{{ issAlertsOnOff }}"><button onClick="{{ toggleIssAlerts }}" style="width:46px;height:28px;flex:none;border-radius:14px;border:none;background:var(--toggle-off);position:relative;cursor:pointer"><span style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:11px;background:var(--muted)"></span></button></sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMoreHome }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">Cosmopedia</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.moreTitle }}</div></div>
+        <div onClick="{{ openBadges }}" style="border-radius:20px;padding:18px;background:var(--surface);border:1px solid rgba(240,180,106,.3);display:flex;flex-direction:column;gap:10px;cursor:pointer">
+          <div style="display:flex;justify-content:space-between"><span style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--amber)">{{ tx.yourRank }}</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)">{{ rank.badgeCount }} {{ tx.badgesWord }}</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-size:26px;font-weight:700">{{ rank.name }}</span><span style="font:500 13px 'IBM Plex Mono',monospace">{{ rank.xp }} XP</span></div>
+          <div style="height:6px;border-radius:3px;background:rgba(var(--ink),.08);overflow:hidden"><div style="height:100%;width:{{ rank.pct }};background:var(--amber)"></div></div>
+          <span style="font-size:12.5px;color:var(--muted)">{{ rank.toNext }}</span>
+        </div>
+        <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.exploreMore }}</div>
+        <div style="display:flex;flex-direction:column;border-radius:18px;overflow:hidden;border:1px solid rgba(var(--ink),.06)">
+          <sc-for list="{{ moreItems }}" as="m" hint-placeholder-count="6">
+            <button onClick="{{ m.go }}" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:none;border-bottom:1px solid rgba(var(--ink),.06);background:var(--surface);color:var(--text);text-align:left;cursor:pointer" style-hover="background:var(--hover)">
+              <span style="width:8px;height:8px;flex:none;background:var(--amber);transform:rotate(45deg)"></span>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 15px 'Space Grotesk',sans-serif">{{ m.label }}</span><span style="font:400 12.5px 'Space Grotesk',sans-serif;color:var(--muted)">{{ m.sub }}</span></div>
+              <span style="color:var(--muted2)">→</span>
+            </button>
+          </sc-for>
+        </div>
+        <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.settings }}</div>
+        <div style="display:flex;flex-direction:column;border-radius:18px;overflow:hidden;border:1px solid rgba(var(--ink),.06)">
+          <sc-for list="{{ settingsItems }}" as="m" hint-placeholder-count="2">
+            <button onClick="{{ m.go }}" style="display:flex;align-items:center;gap:14px;padding:14px 16px;border:none;border-bottom:1px solid rgba(var(--ink),.06);background:var(--surface);color:var(--text);text-align:left;cursor:pointer" style-hover="background:var(--hover)">
+              <span style="width:8px;height:8px;flex:none;background:var(--blue);transform:rotate(45deg)"></span>
+              <div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 15px 'Space Grotesk',sans-serif">{{ m.label }}</span><span style="font:400 12.5px 'Space Grotesk',sans-serif;color:var(--muted)">{{ m.sub }}</span></div>
+              <span style="color:var(--muted2)">→</span>
+            </button>
+          </sc-for>
+          <div style="padding:12px 14px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(var(--ink),.06)"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">{{ tx.breaking }}</span><span style="font-size:12.5px;color:var(--muted)">{{ tx.breakingSub }}</span></div><sc-if value="{{ alertsOn }}"><button onClick="{{ toggleAlerts }}" style="width:46px;height:28px;flex:none;border-radius:14px;border:none;background:var(--blue);position:relative;cursor:pointer"><span style="position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:11px;background:var(--bg)"></span></button></sc-if>
+<sc-if value="{{ alertsOnOff }}"><button onClick="{{ toggleAlerts }}" style="width:46px;height:28px;flex:none;border-radius:14px;border:none;background:var(--toggle-off);position:relative;cursor:pointer"><span style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:11px;background:var(--muted)"></span></button></sc-if></div>
+          <div style="padding:12px 14px;display:flex;align-items:center;gap:12px"><div style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;font-weight:600">{{ tx.issNearby }}</span><span style="font-size:12.5px;color:var(--muted)">{{ tx.issNearbySub }}</span></div><sc-if value="{{ issAlertsOn }}"><button onClick="{{ toggleIssAlerts }}" style="width:46px;height:28px;flex:none;border-radius:14px;border:none;background:var(--blue);position:relative;cursor:pointer"><span style="position:absolute;top:3px;right:3px;width:22px;height:22px;border-radius:11px;background:var(--bg)"></span></button></sc-if>
+<sc-if value="{{ issAlertsOnOff }}"><button onClick="{{ toggleIssAlerts }}" style="width:46px;height:28px;flex:none;border-radius:14px;border:none;background:var(--toggle-off);position:relative;cursor:pointer"><span style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:11px;background:var(--muted)"></span></button></sc-if></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isSolar }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.interactive }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.solarTitle }}</div></div>
+        <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px">
+  <sc-for list="{{ solarViews }}" as="c" hint-placeholder-count="3">
+    <sc-if value="{{ c.active }}"><button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:none;background:var(--amber);color:var(--on-accent);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ c.label }}</button></sc-if>
+    <sc-if value="{{ c.inactive }}"><button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ c.label }}</button></sc-if>
+  </sc-for>
+</div>
+        <sc-if value="{{ solar.orbits }}">
+          <div style="position:relative;width:330px;height:330px;align-self:center;border-radius:50%;background:radial-gradient(circle,rgba(240,180,106,.08),rgba(0,0,0,0) 60%)">
+            <sc-for list="{{ solar.rings }}" as="r" hint-placeholder-count="8">
+              <div style="position:absolute;left:50%;top:50%;width:{{ r.d }};height:{{ r.d }};transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(var(--ink),.08)"></div>
+            </sc-for>
+            <div style="position:absolute;left:50%;top:50%;width:22px;height:22px;transform:translate(-50%,-50%);border-radius:50%;background:var(--amber);box-shadow:0 0 24px rgba(240,180,106,.7)"></div>
+            <sc-for list="{{ solar.planets }}" as="p" hint-placeholder-count="8">
+              <div onClick="{{ p.pick }}" style="position:absolute;left:{{ p.x }};top:{{ p.y }};width:{{ p.s }};height:{{ p.s }};transform:translate(-50%,-50%);border-radius:50%;background:{{ p.color }};cursor:pointer">
+                <sc-if value="{{ p.isSel }}"><span style="position:absolute;left:50%;top:-20px;transform:translateX(-50%);white-space:nowrap;font:600 11px 'IBM Plex Mono',monospace;color:var(--text)">{{ p.name }}</span><span style="position:absolute;inset:-5px;border-radius:50%;border:1.5px solid var(--text)"></span></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;justify-content:space-between;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted)"><span>{{ tx.timeTravel }}</span><span style="color:var(--text)">{{ solar.dateLabel }}</span></div>
+            <input type="range" min="-365" max="365" step="1" value="{{ solar.offset }}" onChange="{{ solar.onOffset }}" style="width:100%;accent-color:var(--amber)">
+          </div>
+          <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;align-items:center;gap:12px"><span style="width:22px;height:22px;border-radius:50%;background:{{ solar.sel.color }}"></span><span style="font-size:20px;font-weight:700">{{ solar.sel.name }}</span></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(var(--ink),.07);border-radius:16px;overflow:hidden"><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.fromSun }}</span><span style="font-size:17px;font-weight:600">{{ solar.sel.au }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.fromEarth }}</span><span style="font-size:17px;font-weight:600">{{ solar.sel.fromEarth }}</span></div><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ tx.yearCap }}</span><span style="font-size:17px;font-weight:600">{{ solar.sel.year }}</span></div></div>
+            <button onClick="{{ solar.sel.open }}" style="height:44px;border-radius:14px;border:1px solid rgba(var(--ink),.1);background:var(--surface);color:var(--text);font:500 14px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.readAbout }} {{ solar.sel.name }} →</button>
+          </div>
+          <div style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted2);line-height:1.5">{{ tx.solarNote }}</div>
+        </sc-if>
+        <sc-if value="{{ solar.sizes }}">
+          <div style="display:flex;align-items:flex-end;gap:14px;overflow-x:auto;margin:0 -20px;padding:10px 20px 4px">
+            <sc-for list="{{ solar.sizeList }}" as="p" hint-placeholder-count="8">
+              <div onClick="{{ p.open }}" style="flex:none;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer">
+                <div style="width:{{ p.px }};height:{{ p.px }};border-radius:50%;background:{{ p.color }}"></div>
+                <span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--text2)">{{ p.name }}</span>
+                <span style="font:400 10px 'IBM Plex Mono',monospace;color:var(--muted2)">{{ p.km }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="font-size:13.5px;line-height:1.5;color:var(--muted)">{{ tx.sizeNote }}</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isWalls }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.nasaImagery }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.wallsTitle }}</div></div>
+        <div style="display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px">
+  <sc-for list="{{ wallThemes }}" as="c" hint-placeholder-count="3">
+    <sc-if value="{{ c.active }}"><button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:none;background:var(--amber);color:var(--on-accent);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ c.label }}</button></sc-if>
+    <sc-if value="{{ c.inactive }}"><button onClick="{{ c.pick }}" style="flex:none;height:34px;padding:0 14px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ c.label }}</button></sc-if>
+  </sc-for>
+</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <sc-for list="{{ walls }}" as="w" hint-placeholder-count="6">
+            <div onClick="{{ w.open }}" style="position:relative;aspect-ratio:9/16;border-radius:14px;overflow:hidden;cursor:pointer;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+              <img src="{{ w.src }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ wallsLoading }}"><div style="text-align:center;color:var(--muted);font:500 12px 'IBM Plex Mono',monospace">{{ tx.loadingImgs }}</div></sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isWeight }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.funCalc }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.weightTitle }}</div></div>
+        <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:14px 16px;display:flex;align-items:center;gap:12px">
+          <span style="flex:1;font-size:14px;color:var(--text2)">{{ tx.yourWeight }}</span>
+          <input type="number" min="1" max="500" value="{{ weight.kg }}" onChange="{{ weight.onKg }}" style="width:90px;height:44px;border-radius:12px;border:1px solid rgba(var(--ink),.12);background:var(--bg);color:var(--text);font:600 18px 'Space Grotesk',sans-serif;text-align:center;outline:none">
+          <span style="font:500 13px 'IBM Plex Mono',monospace;color:var(--muted)">kg</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <sc-for list="{{ weight.rows }}" as="r" hint-placeholder-count="8">
+            <div onClick="{{ r.open }}" style="display:flex;flex-direction:column;gap:6px;cursor:pointer">
+              <div style="display:flex;justify-content:space-between"><span style="font-size:14.5px;font-weight:500">{{ r.name }}</span><span style="font:600 14px 'IBM Plex Mono',monospace">{{ r.val }}</span></div>
+              <div style="height:6px;border-radius:3px;background:rgba(var(--ink),.06);overflow:hidden"><div style="height:100%;width:{{ r.pct }};background:var(--blue)"></div></div>
+            </div>
+          </sc-for>
+        </div>
+        <button onClick="{{ weight.share }}" style="height:44px;border-radius:14px;border:1px solid rgba(var(--ink),.1);background:var(--surface);color:var(--text);font:500 14px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.shareWeight }}</button>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMoon }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ todayLabel }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.moonTitle }}</div></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 0">
+          <div style="position:relative;width:150px;height:150px;flex:none;border-radius:50%;overflow:hidden;background:var(--moon-dark)">
+  <div style="position:absolute;top:0;height:100%;width:50%;left:{{ moonNow.halfLeft }};background:#e9e4d6"></div>
+  <div style="position:absolute;top:0;height:100%;left:50%;width:{{ moonNow.ellW }};transform:translateX(-50%);border-radius:50%;background:{{ moonNow.ellC }}"></div>
+</div>
+          <span style="font-size:22px;font-weight:700">{{ moonNow.name }}</span>
+          <span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ moonNow.illum }} {{ tx.illuminated }} · {{ moonNow.dayOf }}</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:rgba(var(--ink),.07);border-radius:16px;overflow:hidden"><sc-for list="{{ moonNext }}" as="n" hint-placeholder-count="4"><div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted)">{{ n.label }}</span><span style="font-size:17px;font-weight:600">{{ n.date }}</span></div></sc-for></div>
+        <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.next30 }}</div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px 6px">
+          <sc-for list="{{ moonDays }}" as="d" hint-placeholder-count="30">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+              <div style="position:relative;width:30px;height:30px;flex:none;border-radius:50%;overflow:hidden;background:var(--moon-dark)">
+  <div style="position:absolute;top:0;height:100%;width:50%;left:{{ d.halfLeft }};background:#e9e4d6"></div>
+  <div style="position:absolute;top:0;height:100%;left:50%;width:{{ d.ellW }};transform:translateX(-50%);border-radius:50%;background:{{ d.ellC }}"></div>
+</div>
+              <span style="font:500 10px 'IBM Plex Mono',monospace;color:var(--muted)">{{ d.label }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.eclipsesTitle }}</div>
+        <sc-for list="{{ eclipses }}" as="e" hint-placeholder-count="3">
+          <div style="display:flex;gap:14px;align-items:center;padding:12px 14px;border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06)">
+            <div style="width:54px;flex:none;display:flex;flex-direction:column;align-items:center"><span style="font:500 10px 'IBM Plex Mono',monospace;color:var(--amber)">{{ e.mon }}</span><span style="font-size:22px;font-weight:700;line-height:1.1">{{ e.day }}</span><span style="font:400 10px 'IBM Plex Mono',monospace;color:var(--muted)">{{ e.year }}</span></div>
+            <div style="flex:1;display:flex;flex-direction:column;gap:3px"><span style="font-size:14.5px;font-weight:600">{{ e.type }}</span><span style="font-size:12.5px;color:var(--muted)">{{ tx.visibleFrom }} {{ e.where }}</span></div>
+          </div>
+        </sc-for>
+        <div style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted2)">{{ tx.approx }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isBadges }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ rank.xp }} XP</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.achTitle }}</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ ranks }}" as="r" hint-placeholder-count="6">
+            <sc-if value="{{ r.reached }}"><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;background:rgba(240,180,106,.1)"><span style="width:10px;height:10px;background:var(--amber);transform:rotate(45deg)"></span><span style="flex:1;font-weight:600">{{ r.name }}</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--amber)">{{ r.xp }} XP</span></div></sc-if>
+            <sc-if value="{{ r.locked }}"><div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;border:1px solid rgba(var(--ink),.06)"><span style="width:10px;height:10px;border:1.5px solid var(--line-strong);transform:rotate(45deg)"></span><span style="flex:1;color:var(--muted)">{{ r.name }}</span><span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--muted2)">{{ r.xp }} XP</span></div></sc-if>
+          </sc-for>
+        </div>
+        <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.badgesCap }} · {{ rank.badgeCount }}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <sc-for list="{{ badges }}" as="b" hint-placeholder-count="10">
+            <sc-if value="{{ b.earned }}"><div style="padding:14px;border-radius:16px;background:var(--surface);border:1px solid rgba(240,180,106,.4);display:flex;flex-direction:column;gap:6px"><span style="width:26px;height:26px;border-radius:50%;background:var(--amber);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700">✓</span><span style="font-size:14.5px;font-weight:600">{{ b.name }}</span><span style="font-size:12px;color:var(--muted);line-height:1.4">{{ b.desc }}</span></div></sc-if>
+            <sc-if value="{{ b.locked }}"><div style="padding:14px;border-radius:16px;border:1px dashed rgba(var(--ink),.12);display:flex;flex-direction:column;gap:6px"><span style="width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line-strong)"></span><span style="font-size:14.5px;font-weight:500;color:var(--muted)">{{ b.name }}</span><span style="font-size:12px;color:var(--muted2);line-height:1.4">{{ b.desc }}</span></div></sc-if>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5">{{ tx.xpNote }}</div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isTheme }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.settings }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.appearance }}</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ themes }}" as="l" hint-placeholder-count="3">
+            <sc-if value="{{ l.active }}"><button onClick="{{ l.pick }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:1px solid var(--amber);background:rgba(240,180,106,.1);color:var(--text);cursor:pointer;text-align:left"><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 16px 'Space Grotesk',sans-serif">{{ l.name }}</span><span style="font:400 12px 'Space Grotesk',sans-serif;color:var(--muted)">{{ l.sub }}</span></span><span style="color:var(--amber)">✓</span></button></sc-if>
+            <sc-if value="{{ l.inactive }}"><button onClick="{{ l.pick }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:1px solid rgba(var(--ink),.08);background:var(--surface);color:var(--text);cursor:pointer;text-align:left" style-hover="background:var(--hover)"><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:500 16px 'Space Grotesk',sans-serif">{{ l.name }}</span><span style="font:400 12px 'Space Grotesk',sans-serif;color:var(--muted)">{{ l.sub }}</span></span></button></sc-if>
+          </sc-for>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isLang }}">
+      <div style="padding:10px 20px 24px;display:flex;flex-direction:column;gap:18px">
+        <button onClick="{{ back }}" style="align-self:flex-start;height:34px;padding:0 14px 0 10px;border-radius:17px;border:1px solid rgba(var(--ink),.1);background:transparent;color:var(--text2);font:500 13px 'Space Grotesk',sans-serif;cursor:pointer" style-hover="background:var(--hover)">{{ tx.back }}</button>
+        <div><div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.settings }}</div><div style="font-size:30px;font-weight:700;letter-spacing:-.02em">{{ tx.langTitle }}</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <sc-for list="{{ langs }}" as="l" hint-placeholder-count="3">
+            <sc-if value="{{ l.active }}"><button onClick="{{ l.pick }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:1px solid var(--amber);background:rgba(240,180,106,.08);color:var(--text);cursor:pointer;text-align:left"><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:600 16px 'Space Grotesk',sans-serif">{{ l.native }}</span><span style="font:400 12px 'Space Grotesk',sans-serif;color:var(--muted)">{{ l.name }}</span></span><span style="color:var(--amber)">✓</span></button></sc-if>
+            <sc-if value="{{ l.inactive }}"><button onClick="{{ l.pick }}" style="display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:16px;border:1px solid rgba(var(--ink),.08);background:var(--surface);color:var(--text);cursor:pointer;text-align:left" style-hover="background:var(--hover)"><span style="flex:1;display:flex;flex-direction:column;gap:2px"><span style="font:500 16px 'Space Grotesk',sans-serif">{{ l.native }}</span><span style="font:400 12px 'Space Grotesk',sans-serif;color:var(--muted)">{{ l.name }}</span></span></button></sc-if>
+          </sc-for>
+        </div>
+        <div style="font-size:13px;color:var(--muted);line-height:1.5">{{ tx.langNote }}</div>
+      </div>
+    </sc-if>
+  </div>
+
+  <sc-if value="{{ showAds }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:none;height:54px;margin:0 12px 6px;border-radius:10px;border:1px dashed rgba(var(--ink),.18);display:flex;align-items:center;justify-content:center;gap:8px;font:500 10.5px 'IBM Plex Mono',monospace;color:var(--muted);background:var(--surface2)">
+      <span style="color:var(--amber)">AD</span> Banner · 320×50 · AdMob
+    </div>
+  </sc-if>
+
+  <div style="flex:none;height:78px;border-top:1px solid rgba(var(--ink),.07);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:12px;padding-top:8px;background:var(--nav)">
+    <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+      <button onClick="{{ t.go }}" style="border:none;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;position:relative">
+        <span style="width:34px;height:34px;border-radius:12px;background:{{ t.pillBg }};display:flex;align-items:center;justify-content:center;color:{{ t.iconColor }}">
+          <sc-if value="{{ t.isExplore }}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M15 9l-4.2 2.8L9 16l4.2-2.8L15 9z" fill="currentColor"/></svg></sc-if>
+          <sc-if value="{{ t.isNews }}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="5" width="17" height="14" rx="1.5" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 9h9M7.5 12.5h9M7.5 16h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></sc-if>
+          <sc-if value="{{ t.isToday }}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4.3" stroke="currentColor" stroke-width="1.8"/><path d="M12 3v2.4M12 18.6V21M4.5 12H6.9M17.1 12h2.4M6.3 6.3l1.7 1.7M16 16l1.7 1.7M6.3 17.7L8 16M16 8l1.7-1.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></sc-if>
+          <sc-if value="{{ t.isSky }}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><path d="M15.5 13.5A6.5 6.5 0 0 1 9 5.2a7 7 0 1 0 8.4 10.2 6.4 6.4 0 0 1-1.9-1.9z" fill="currentColor"/><path d="M18.5 5l.8 1.7L21 7.5l-1.7.8-.8 1.7-.8-1.7L16 7.5l1.7-.8.8-1.7z" fill="currentColor"/></svg></sc-if>
+          <sc-if value="{{ t.isMore }}"><svg width="21" height="21" viewBox="0 0 24 24" fill="none"><circle cx="6" cy="12" r="1.8" fill="currentColor"/><circle cx="12" cy="12" r="1.8" fill="currentColor"/><circle cx="18" cy="12" r="1.8" fill="currentColor"/></svg></sc-if>
+        </span>
+        <span style="font:{{ t.fontWeight }} 11.5px 'Space Grotesk',sans-serif;color:{{ t.textColor }}">{{ t.label }}</span>
+      </button>
+    </sc-for>
+  </div>
+
+  <sc-if value="{{ hasDetail }}">
+    <div ref="{{ detailRef }}" style="position:absolute;inset:0;background:var(--bg);overflow-y:auto;z-index:10">
+      <div style="position:relative;height:360px;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+        <div style="position:absolute;inset:0;background-image:{{ detail.heroBg }};background-size:cover;background-position:center"></div>
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(var(--bg-rgb),.5) 0%,rgba(var(--bg-rgb),0) 30%,rgba(var(--bg-rgb),0) 55%,var(--bg) 100%)"></div>
+        <button onClick="{{ closeDetail }}" style="position:absolute;top:44px;left:16px;width:40px;height:40px;border-radius:20px;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:18px;cursor:pointer">←</button>
+        <sc-if value="{{ detail.saved }}"><button onClick="{{ detail.toggleSave }}" style="position:absolute;top:44px;right:16px;height:40px;padding:0 14px;border-radius:20px;border:none;background:var(--amber);color:var(--on-accent);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.saved }}</button></sc-if>
+        <sc-if value="{{ detail.notSaved }}"><button onClick="{{ detail.toggleSave }}" style="position:absolute;top:44px;right:16px;height:40px;padding:0 14px;border-radius:20px;border:none;background:rgba(0,0,0,.55);color:#fff;font:500 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.save }}</button></sc-if>
+        <div style="position:absolute;left:20px;right:20px;bottom:6px;display:flex;flex-direction:column;gap:4px">
+          <span style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--amber);text-transform:uppercase">{{ detail.catLabel }}</span>
+          <span style="font-size:36px;font-weight:700;letter-spacing:-.02em;line-height:1">{{ detail.name }}</span>
+          <span style="font-size:14px;color:var(--text2)">{{ detail.tagline }}</span>
+        </div>
+      </div>
+      <div style="padding:18px 20px 40px;display:flex;flex-direction:column;gap:22px">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(var(--ink),.07);border-radius:16px;overflow:hidden">
+          <sc-for list="{{ detail.facts }}" as="f" hint-placeholder-count="4">
+            <div style="background:var(--cell);padding:12px 14px;display:flex;flex-direction:column;gap:3px">
+              <span style="font:500 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:var(--muted);text-transform:uppercase">{{ f.k }}</span>
+              <span style="font-size:16px;font-weight:600">{{ f.v }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ showAds }}">
+          <div style="border-radius:14px;border:1px dashed rgba(var(--ink),.18);height:100px;display:flex;align-items:center;justify-content:center;gap:8px;font:500 11px 'IBM Plex Mono',monospace;color:var(--muted);background:var(--surface2)"><span style="color:var(--amber)">AD</span> Banner · 300×100 · AdMob</div>
+        </sc-if>
+        <sc-for list="{{ detail.sections }}" as="sec" hint-placeholder-count="3">
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="font:500 10.5px 'IBM Plex Mono',monospace;color:var(--amber)">{{ sec.num }}</span>
+              <span style="font-size:18px;font-weight:600">{{ sec.h }}</span>
+            </div>
+            <div style="font-size:15.5px;line-height:1.6;color:var(--text2);text-wrap:pretty">{{ sec.p }}</div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ detail.hasDyk }}">
+          <div style="border-radius:18px;background:var(--surface);border:1px solid rgba(var(--ink),.06);padding:16px 18px;display:flex;flex-direction:column;gap:12px">
+            <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--blue);text-transform:uppercase">{{ tx.dyk }}</div>
+            <sc-for list="{{ detail.dyk }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex;gap:12px;align-items:flex-start">
+                <span style="width:6px;height:6px;flex:none;margin-top:8px;background:var(--blue);transform:rotate(45deg)"></span>
+                <span style="font-size:14.5px;line-height:1.5;color:var(--text2);text-wrap:pretty">{{ d.t }}</span>
+              </div>
+            </sc-for>
+            <button onClick="{{ detail.share }}" style="align-self:flex-start;height:34px;padding:0 14px;border-radius:17px;border:1px solid rgba(143,184,255,.5);background:transparent;color:var(--blue);font:500 12.5px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.shareFact }}</button>
+          </div>
+        </sc-if>
+        <sc-if value="{{ detail.hasGallery }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.gallery }}</div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px">
+              <sc-for list="{{ detail.gallery }}" as="g" hint-placeholder-count="6">
+                <img src="{{ g.src }}" alt="" loading="lazy" onClick="{{ g.open }}" style="width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;cursor:zoom-in;background:var(--surface)">
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{ detail.hasRelated }}">
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--muted);text-transform:uppercase">{{ tx.moreIn }} {{ detail.catLabel }}</div>
+            <div style="display:flex;gap:10px;overflow-x:auto;margin:0 -20px;padding:0 20px">
+              <sc-for list="{{ detail.related }}" as="r" hint-placeholder-count="3">
+                <div onClick="{{ r.open }}" style="flex:none;width:130px;border-radius:14px;overflow:hidden;background:var(--surface);border:1px solid rgba(var(--ink),.06);cursor:pointer">
+                  <div style="position:relative;height:84px;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+                    <sc-if value="{{ r.hasImg }}" hint-placeholder-val="{{ false }}"><img src="{{ r.img }}" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+                  </div>
+                  <div style="padding:8px 10px;font-size:13px;font-weight:600">{{ r.name }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasArticle }}">
+    <div style="position:absolute;inset:0;background:var(--bg);overflow-y:auto;z-index:11">
+      <div style="position:relative;height:280px;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
+        <div style="position:absolute;inset:0;background-image:{{ article.bg }};background-size:cover;background-position:center"></div>
+        <button onClick="{{ closeArticle }}" style="position:absolute;top:44px;left:16px;width:40px;height:40px;border-radius:20px;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:18px;cursor:pointer">←</button>
+        <sc-if value="{{ article.saved }}"><button onClick="{{ article.toggleSave }}" style="position:absolute;top:44px;right:16px;height:40px;padding:0 14px;border-radius:20px;border:none;background:var(--amber);color:var(--on-accent);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.saved }}</button></sc-if>
+        <sc-if value="{{ article.notSaved }}"><button onClick="{{ article.toggleSave }}" style="position:absolute;top:44px;right:16px;height:40px;padding:0 14px;border-radius:20px;border:none;background:rgba(0,0,0,.55);color:#fff;font:500 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ tx.save }}</button></sc-if>
+      </div>
+      <div style="padding:20px 20px 40px;display:flex;flex-direction:column;gap:14px">
+        <span style="font:500 11px 'IBM Plex Mono',monospace;color:var(--blue)">{{ article.site }} · {{ article.date }}</span>
+        <span style="font-size:24px;font-weight:700;line-height:1.2;letter-spacing:-.01em;text-wrap:pretty">{{ article.title }}</span>
+        <span style="font-size:15.5px;line-height:1.6;color:var(--text2);text-wrap:pretty">{{ article.summary }}</span>
+        <a href="{{ article.url }}" target="_blank" rel="noopener" style="margin-top:8px;height:50px;border-radius:14px;background:var(--blue);color:var(--on-blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px">{{ tx.readFull }} ↗</a>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasWall }}">
+    <div style="position:absolute;inset:0;z-index:12;background:#000">
+      <div style="position:absolute;inset:0;background-image:{{ wall.bg }};background-size:cover;background-position:center"></div>
+      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.55),rgba(0,0,0,0) 22%,rgba(0,0,0,0) 55%,rgba(0,0,0,.92))"></div>
+      <button onClick="{{ closeWall }}" style="position:absolute;top:44px;left:16px;width:40px;height:40px;border-radius:20px;border:none;background:rgba(0,0,0,.55);color:#fff;font-size:18px;cursor:pointer">←</button>
+      <div style="position:absolute;left:20px;right:20px;bottom:28px;display:flex;flex-direction:column;gap:12px">
+        <span style="font-size:16px;font-weight:600;line-height:1.3;text-wrap:pretty;color:#fff">{{ wall.title }}</span>
+        <sc-if value="{{ wall.noHd }}"><button onClick="{{ wall.download }}" style="height:50px;border-radius:14px;border:none;background:var(--amber);color:var(--on-accent);font:600 15px 'Space Grotesk',sans-serif;cursor:pointer">{{ wall.dlLabel }}</button></sc-if>
+        <sc-if value="{{ wall.hasHd }}">
+          <a href="{{ wall.hd }}" target="_blank" rel="noopener" style="height:50px;border-radius:14px;background:var(--blue);color:var(--on-blue);display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px">{{ tx.openHd }}</a>
+          <span style="font-size:12.5px;color:#d4d7de;line-height:1.45">{{ tx.longPress }}</span>
+        </sc-if>
+        <span style="font:400 10px 'IBM Plex Mono',monospace;color:#b8bcc6">{{ tx.credit }}</span>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasLightbox }}">
+    <div onClick="{{ closeLightbox }}" style="position:absolute;inset:0;background:rgba(0,0,0,.94);z-index:20;display:flex;flex-direction:column;justify-content:center;gap:14px;padding:20px;cursor:zoom-out">
+      <div style="width:100%;height:600px;background-image:{{ lightbox.bg }};background-size:contain;background-position:center;background-repeat:no-repeat"></div>
+      <span style="font-size:13px;color:#b8bcc6;text-align:center">{{ lightbox.title }}</span>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ interActive }}">
+    <div style="position:absolute;inset:0;background:var(--bg);z-index:30;display:flex;flex-direction:column;padding:48px 20px 28px;gap:16px">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <span style="font:500 10.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:var(--amber)">{{ interLabel }}</span>
+        <sc-if value="{{ interDone }}"><button onClick="{{ closeInter }}" style="height:34px;padding:0 14px;border-radius:17px;border:none;background:var(--text);color:var(--bg);font:600 13px 'Space Grotesk',sans-serif;cursor:pointer">{{ interCloseLabel }}</button></sc-if>
+        <sc-if value="{{ interWaiting }}"><span style="font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ interCloseIn }}</span></sc-if>
+      </div>
+      <div style="flex:1;border-radius:20px;border:1px dashed rgba(var(--ink),.18);background:repeating-linear-gradient(135deg,var(--stripe1) 0 10px,var(--cell) 10px 20px);display:flex;align-items:center;justify-content:center;font:500 12px 'IBM Plex Mono',monospace;color:var(--muted)">{{ interText }}</div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ hasToast }}">
+    <div style="position:absolute;left:16px;right:16px;bottom:150px;z-index:40;padding:13px 16px;border-radius:14px;background:var(--text);color:var(--bg);font:500 14px 'Space Grotesk',sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.5)">{{ toast }}</div>
+  </sc-if>
+
+  <sc-if value="{{ hasPush }}">
+    <div onClick="{{ pushTap }}" style="position:absolute;top:40px;left:10px;right:10px;z-index:50;padding:12px 14px;border-radius:20px;background:var(--surface);display:flex;gap:12px;align-items:flex-start;box-shadow:0 12px 36px rgba(0,0,0,.6);cursor:pointer">
+      <span style="width:36px;height:36px;flex:none;border-radius:10px;background:var(--amber);color:var(--on-accent);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:17px">C</span>
+      <div style="flex:1;display:flex;flex-direction:column;gap:2px">
+        <span style="font:400 11px 'IBM Plex Mono',monospace;color:var(--muted)">Cosmopedia · now</span>
+        <span style="font-size:14.5px;font-weight:600">{{ push.title }}</span>
+        <span style="font-size:13px;color:var(--text3);line-height:1.4">{{ push.body }}</span>
+      </div>
+    </div>
+  </sc-if>
+</div>
+
+<div style="max-width:320px;display:flex;flex-direction:column;gap:14px;font-size:14px;line-height:1.55;color:#9aa0ad">
+  <div style="font-size:22px;font-weight:700;color:#eceef3">Cosmopedia</div>
+  <div>Space encyclopedia + live news. Every image and headline is pulled live from free public APIs. None of them need a paid key.</div>
+  <div style="display:flex;flex-direction:column;gap:6px;font:400 12px 'IBM Plex Mono',monospace">
+    <span><span style="color:#f0b46a">Explore</span> · NASA Image Library</span>
+    <span><span style="color:#8fb8ff">News</span> · Spaceflight News API</span>
+    <span><span style="color:#eceef3">Today</span> · NASA APOD + Launch Library 2</span>
+    <span><span style="color:#7fd6a0">Quiz</span> · 5 new questions daily, streaks</span>
+    <span><span style="color:#eceef3">Saved</span> · topics, stories, launch alerts</span>
+    <span><span style="color:#8fb8ff">Alerts</span> · breaking-news + launch notifications</span>
+    <span><span style="color:#8fb8ff">Sky</span> · planets tonight (on-device maths) + ISS live</span>
+    <span><span style="color:#eceef3">More</span> · solar system, moon, wallpapers, weight, badges, language</span>
+  </div>
+  <div>Ad slots: bottom banner, a native ad every 5 stories, and a full-screen ad every few encyclopedia entries you open, and an optional rewarded ad for quiz hints (usually the best-paying ad type). You can change these in Tweaks.</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showAds&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;interstitialEvery&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:4,&quot;min&quot;:0,&quot;max&quot;:10,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;}}">
+const DATA=()=>(window.COSMOS||[]).map(o=>({...o,facts:o.facts.map(([k,v])=>({k,v}))}));
+let OBJ=[],QUIZ=[];
+const CATS=['All','Planets','Moons','Stars','Small Bodies','Galaxies','Nebulae','Phenomena','Universe','Missions'];
+const NF=[['Latest',''],['Launches','launch'],['NASA','nasa'],['SpaceX','spacex'],['Mars','mars'],['Moon','moon'],['ISS','space station'],['Webb','webb']];
+const ago=d=>{const s=(Date.now()-new Date(d))/1000;if(s<3600)return Math.max(1,Math.round(s/60))+'m ago';if(s<86400)return Math.round(s/3600)+'h ago';return Math.round(s/86400)+'d ago';};
+let LOCALE='en';
+const fmt=d=>new Date(d).toLocaleDateString(LOCALE,{month:'short',day:'numeric',year:'numeric'});
+const fmtD=d=>new Date(d).toLocaleDateString(LOCALE,{month:'short',day:'numeric'});
+const fmtT=d=>new Date(d).toLocaleTimeString(LOCALE,{hour:'numeric',minute:'2-digit'});
+const F=(s,o)=>String(s||'').replace(/\{(\w+)\}/g,(_,k)=>o[k]);
+const LOADED={en:true};
+function loadLang(lang,cb){if(LOADED[lang])return cb();LOADED[lang]='loading';let n=0;const files=[1,2,3,4,5,6].map(i=>'cosmos-'+lang+'-'+i+'.js').concat(['quiz-'+lang+'.js']);files.forEach(f=>{const s=document.createElement('script');s.src=f;s.onload=s.onerror=()=>{if(++n===files.length){LOADED[lang]=true;cb();}};document.head.appendChild(s);});}
+function locObj(o,lang){if(lang==='en')return o;const t=((window.COSMOS_I18N||{})[lang]||{})[o.id];if(!t)return o;return{...o,name:t.name||o.name,tagline:t.tagline||o.tagline,facts:t.facts?t.facts.map(([k,v])=>({k,v})):o.facts,sections:t.sections||o.sections,dyk:t.dyk||o.dyk};}
+function locQuiz(q,i,lang){if(lang==='en')return q;const t=((window.COSMOS_QUIZ_I18N||{})[lang]||[])[i];if(!t)return q;return[t[0],t[1],q[2],t[2],q[4],q[5]];}
+const DAY=()=>{const d=new Date();return Math.floor((d-d.getTimezoneOffset()*6e4)/864e5);};
+const rng=seed=>()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+const pickLevel=(day,lvl)=>{const pool=QUIZ.map((q,i)=>i).filter(i=>(QUIZ[i][5]||2)===lvl);const r=rng(day*9973+lvl*131);for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}return pool.slice(0,5);};
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}};
+const LETTERS=['A','B','C','D'];
+const FALLBACK='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" fill="#11131a"/><circle cx="100" cy="88" r="22" fill="none" stroke="#3a3f4c" stroke-width="3"/><circle cx="100" cy="88" r="5" fill="#f0b46a"/><text x="100" y="138" text-anchor="middle" font-family="monospace" font-size="10" letter-spacing="1.5" fill="#6b7180">IMAGE UNAVAILABLE</text></svg>');
+const LEVELS=[[1,'Easy'],[2,'Medium'],[3,'Hard']];
+const RANKS=[['Cadet',0],['Pilot',20],['Navigator',50],['Commander',100],['Astronaut',180],['Legend',300]];
+const BADGES=[['first','First Launch','Finish your first quiz'],['perfect','Perfect Orbit','Score 5/5 on any quiz'],['hard','Hard Vacuum','Finish a Hard quiz'],['streak3','On a Roll','Keep a 3-day quiz streak'],['streak7','Week in Orbit','Keep a 7-day quiz streak'],['reader','Explorer','Read 10 encyclopedia topics'],['collector','Collector','Save 5 items'],['sky','Night Watcher','Check tonight’s sky'],['iss','Spotter','Track the ISS live'],['share','Ambassador','Share a card with a friend']];
+const PLANETS=[['mercury','Mercury','#a8a49c',2439,0.241],['venus','Venus','#e3c58f',6052,0.615],['earth','Earth','#6fa3e0',6371,1],['mars','Mars','#d2704a',3390,1.881],['jupiter','Jupiter','#d9b48a',69911,11.86],['saturn','Saturn','#e8d29a',58232,29.46],['uranus','Uranus','#9fd8de',25362,84.01],['neptune','Neptune','#5b7fdc',24622,164.8]];
+const PCOL={moon:'#e9e4d6'};PLANETS.forEach(p=>PCOL[p[0]]=p[2]);
+const GRAV=[['The Moon',.166,'moon'],['Mercury',.38,'mercury'],['Venus',.904,'venus'],['Mars',.379,'mars'],['Jupiter',2.528,'jupiter'],['Saturn',1.065,'saturn'],['Uranus',.886,'uranus'],['Neptune',1.137,'neptune'],['Pluto',.063,'pluto'],['Titan',.138,'titan'],['Europa',.134,'europa'],['The Sun',27.9,'sun']];
+const ECLIPSES=[['2026-08-12','Total solar eclipse','Greenland, Iceland, Spain'],['2026-08-28','Partial lunar eclipse','Americas, Europe, Africa'],['2027-02-06','Annular solar eclipse','South America, Atlantic, Africa'],['2027-02-20','Penumbral lunar eclipse','Americas, Europe, Africa, Asia'],['2027-08-02','Total solar eclipse','Spain, North Africa, Egypt, Arabia'],['2027-08-17','Penumbral lunar eclipse','Pacific, Americas'],['2028-01-12','Partial lunar eclipse','Americas, Europe, Africa'],['2028-01-26','Annular solar eclipse','South America, Spain, Portugal'],['2028-07-06','Partial lunar eclipse','Europe, Africa, Asia, Australia'],['2028-07-22','Total solar eclipse','Australia, New Zealand'],['2028-12-31','Total lunar eclipse','Europe, Asia, Australia']];
+const WALL_THEMES=[['Nebulae','nebula hubble'],['Galaxies','galaxy webb'],['Earth','earth from space station'],['Planets','saturn cassini'],['Aurora','aurora'],['Stars','star cluster']];
+const OTD_FALLBACK=[{year:1957,text:'Sputnik 1, the first artificial satellite, is launched by the Soviet Union (4 Oct).'},{year:1961,text:'Yuri Gagarin becomes the first human in space aboard Vostok 1 (12 Apr).'},{year:1969,text:'Apollo 11 lands on the Moon; Neil Armstrong takes the first step (20 Jul).'}];
+const SPACE_RE=/\b(space|nasa|satellite|rocket|astronaut|cosmonaut|spacecraft|orbit|orbital|lunar|planet|comet|telescope|apollo|soyuz|shuttle|voyager|sputnik|vostok|gemini|probe|asteroid|galaxy|supernova|spacex|esa|roscosmos|iss|mir|skylab|hubble|moon landing)\b/i;
+const TZ_CITIES={'Asia/Kolkata':[28.61,77.21,'New Delhi'],'Asia/Calcutta':[28.61,77.21,'New Delhi'],'Asia/Karachi':[24.86,67.01,'Karachi'],'Asia/Dhaka':[23.81,90.41,'Dhaka'],'Asia/Dubai':[25.2,55.27,'Dubai'],'Asia/Singapore':[1.35,103.82,'Singapore'],'Asia/Tokyo':[35.68,139.69,'Tokyo'],'Asia/Shanghai':[31.23,121.47,'Shanghai'],'Asia/Jakarta':[-6.2,106.85,'Jakarta'],'Asia/Manila':[14.6,120.98,'Manila'],'Europe/London':[51.51,-0.13,'London'],'Europe/Paris':[48.86,2.35,'Paris'],'Europe/Berlin':[52.52,13.4,'Berlin'],'Europe/Madrid':[40.42,-3.7,'Madrid'],'Europe/Rome':[41.9,12.5,'Rome'],'Europe/Moscow':[55.76,37.62,'Moscow'],'Africa/Lagos':[6.52,3.38,'Lagos'],'Africa/Cairo':[30.04,31.24,'Cairo'],'Africa/Johannesburg':[-26.2,28.05,'Johannesburg'],'Africa/Nairobi':[-1.29,36.82,'Nairobi'],'America/New_York':[40.71,-74.01,'New York'],'America/Chicago':[41.88,-87.63,'Chicago'],'America/Denver':[39.74,-104.99,'Denver'],'America/Los_Angeles':[34.05,-118.24,'Los Angeles'],'America/Mexico_City':[19.43,-99.13,'Mexico City'],'America/Sao_Paulo':[-23.55,-46.63,'São Paulo'],'America/Bogota':[4.71,-74.07,'Bogotá'],'America/Argentina/Buenos_Aires':[-34.6,-58.38,'Buenos Aires'],'America/Toronto':[43.65,-79.38,'Toronto'],'Australia/Sydney':[-33.87,151.21,'Sydney'],'Australia/Melbourne':[-37.81,144.96,'Melbourne'],'Pacific/Auckland':[-36.85,174.76,'Auckland']};
+const DEF_LOC=(()=>{let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone;}catch(e){}const c=TZ_CITIES[tz];if(c)return{lat:c[0],lon:c[1],name:c[2]+' (approx.)'};const off=-new Date().getTimezoneOffset()/60;return{lat:30,lon:Math.max(-180,Math.min(180,off*15)),name:'Your time zone (approx.)'};})();
+const LANGS=[['en','English','English'],['hi','Hindi','हिन्दी'],['es','Spanish','Español']];
+const TX={
+en:{explore:'Explore',news:'News',today:'Today',sky:'Sky',quiz:'Quiz',more:'More',newsTitle:'Space News',todayTitle:'Today in Space',skyTitle:'Tonight’s Sky',quizTitle:'Daily Quiz',moreTitle:'More',search:'Search planets, stars, missions…',loadMore:'Load more stories',readFull:'Read full article',save:'☆ Save',saved:'★ Saved',remind:'Remind me',next:'Next question →',results:'See results',back:'← More',settings:'Settings',appearance:'Appearance',themeSystem:'Match phone',themeSystemSub:'Follows your phone’s light/dark setting',themeLight:'Light',themeLightSub:'Bright, easy reading in daylight',themeDark:'Dark',themeDarkSub:'Easy on the eyes at night'},
+hi:{explore:'खोजें',news:'समाचार',today:'आज',sky:'आकाश',quiz:'क्विज़',more:'और',newsTitle:'अंतरिक्ष समाचार',todayTitle:'आज अंतरिक्ष में',skyTitle:'आज रात का आकाश',quizTitle:'दैनिक क्विज़',moreTitle:'और',search:'ग्रह, तारे, मिशन खोजें…',loadMore:'और खबरें देखें',readFull:'पूरा लेख पढ़ें',save:'☆ सहेजें',saved:'★ सहेजा गया',remind:'याद दिलाएँ',next:'अगला प्रश्न →',results:'परिणाम देखें',back:'← और',settings:'सेटिंग्स',appearance:'थीम',themeSystem:'फ़ोन जैसा',themeSystemSub:'आपके फ़ोन की लाइट/डार्क सेटिंग के अनुसार',themeLight:'लाइट',themeLightSub:'दिन में पढ़ने के लिए चमकदार',themeDark:'डार्क',themeDarkSub:'रात में आँखों के लिए आरामदायक'},
+es:{explore:'Explorar',news:'Noticias',today:'Hoy',sky:'Cielo',quiz:'Quiz',more:'Más',newsTitle:'Noticias espaciales',todayTitle:'Hoy en el espacio',skyTitle:'El cielo esta noche',quizTitle:'Quiz diario',moreTitle:'Más',search:'Buscar planetas, estrellas, misiones…',loadMore:'Cargar más noticias',readFull:'Leer artículo completo',save:'☆ Guardar',saved:'★ Guardado',remind:'Recordarme',next:'Siguiente →',results:'Ver resultados',back:'← Más',settings:'Ajustes',appearance:'Apariencia',themeSystem:'Como el teléfono',themeSystemSub:'Sigue el modo claro/oscuro del teléfono',themeLight:'Claro',themeLightSub:'Brillante, ideal de día',themeDark:'Oscuro',themeDarkSub:'Descansa la vista de noche'}};
+const hav=(a,b,c,d)=>{const r=Math.PI/180,x=Math.sin((c-a)*r/2)**2+Math.cos(a*r)*Math.cos(c*r)*Math.sin((d-b)*r/2)**2;return 12742*Math.asin(Math.sqrt(x));};
+const moonDisc=frac=>{const waxing=frac<0.5,il=(1-Math.cos(2*Math.PI*frac))/2;return{halfLeft:waxing?'50%':'0%',ellW:(Math.abs(Math.cos(2*Math.PI*frac))*100).toFixed(1)+'%',ellC:il<0.5?'var(--moon-dark)':'#e9e4d6'};};
+const THEMES={dark:{'--bg':'#07080c','--bg-rgb':'7,8,12','--surface':'#11131a','--surface2':'#0d0f14','--cell':'#0f1117','--nav':'#0a0b10','--hover':'#161922','--text':'#eceef3','--text2':'#c9ccd4','--text3':'#b8bcc6','--muted':'#8a90a0','--muted2':'#6b7180','--stripe1':'#151821','--ink':'255,255,255','--moon-dark':'#232733','--toggle-off':'#2a2e38','--line-strong':'#3a3f4c','--err-bg':'#1a1216','--err':'#ffb3b3','--amber':'#f0b46a','--blue':'#8fb8ff','--green':'#7fd6a0','--red':'#ff9b9b','--on-accent':'#1a1206','--on-blue':'#08101f'},
+light:{'--bg':'#f6f5f2','--bg-rgb':'246,245,242','--surface':'#ffffff','--surface2':'#efeee9','--cell':'#fbfaf8','--nav':'#ffffff','--hover':'#f0efea','--text':'#15171d','--text2':'#33363f','--text3':'#4a4e58','--muted':'#646975','--muted2':'#80858f','--stripe1':'#ecebe6','--ink':'10,12,20','--moon-dark':'#2b2f3a','--toggle-off':'#d6d5d0','--line-strong':'#c4c6cc','--err-bg':'#fbeaea','--err':'#b3261e','--amber':'#a2600f','--blue':'#2757b8','--green':'#1d7f49','--red':'#c0392b','--on-accent':'#ffffff','--on-blue':'#ffffff'}};
+
+class Component extends DCLogic {
+  state={tab:'explore',sub:null,cat:'All',q:'',imgs:{},detail:null,lightbox:null,news:[],newsNext:null,newsLoading:false,newsErr:false,nf:'Latest',article:null,apod:null,apodErr:false,launches:[],launchErr:false,opens:0,inter:false,interN:0,reward:null,
+    saved:{topics:[],articles:[]},reminders:{},qs:{day:0,levels:{}},qLevel:1,streak:{count:0,best:0,last:null},stats:{xp:0,quizzes:0,perfect:0,hard:0,read:[],shares:0,sky:0,iss:0},
+    toast:null,push:null,alerts:false,lastSeen:0,loc:null,iss:null,issAlerts:false,issNear:false,otd:null,otdFallback:false,walls:{},wallTheme:'Nebulae',wall:null,kg:70,lang:'en',solarView:'orbits',solarOff:0,solarSel:'earth',astroReady:false,theme:'system',sysDark:true};
+  phoneRef=React.createRef();
+  applyTheme(){const el=this.phoneRef.current;if(!el)return;const s=this.state;const mode=s.theme==='system'?(s.sysDark?'dark':'light'):s.theme;if(this._mode===mode)return;this._mode=mode;Object.entries(THEMES[mode]).forEach(([k,v])=>el.style.setProperty(k,v));}
+  componentDidUpdate(){this.applyTheme();}
+  detailRef=React.createRef();
+  componentDidMount(){
+    this.onImgErr=e=>{const t=e.target;if(!t||t.tagName!=='IMG'||t.dataset.fb)return;t.dataset.fb='1';t.src=FALLBACK;t.style.objectFit='cover';};
+    document.addEventListener('error',this.onImgErr,true);
+    try{this.mq=window.matchMedia('(prefers-color-scheme: dark)');this.onMq=e=>this.setState({sysDark:e.matches});this.mq.addEventListener('change',this.onMq);this.setState({sysDark:this.mq.matches,theme:LS.get('cosmo_theme','system')});}catch(e){}
+    setTimeout(()=>this.applyTheme(),0);
+    const today=DAY();let qs=LS.get('cosmo_quiz2',null);if(!qs||qs.day!==today||!qs.levels)qs={day:today,levels:{}};
+    const alerts=LS.get('cosmo_newsalerts',false),issAlerts=LS.get('cosmo_issalerts',false);
+    this.setState({saved:LS.get('cosmo_saved',{topics:[],articles:[]}),reminders:LS.get('cosmo_remind',{}),qs,streak:LS.get('cosmo_streak',{count:0,best:0,last:null}),
+      stats:{...this.state.stats,...LS.get('cosmo_stats',{})},alerts,issAlerts,lastSeen:LS.get('cosmo_lastseen',0),loc:LS.get('cosmo_loc',null),lang:LS.get('cosmo_lang','en'),kg:LS.get('cosmo_kg',70)});
+    const lg=LS.get('cosmo_lang','en');if(lg!=='en')loadLang(lg,()=>{this._objK=null;this.forceUpdate();});
+    if(alerts)this.startPolling();
+    const go=()=>{if(!window.COSMOS||!window.Astro||!window.COSMO_TX)return setTimeout(go,60);OBJ=DATA();QUIZ=window.COSMOS_QUIZ||[];this.setState({astroReady:true});OBJ.forEach(o=>this.loadImgs(o));};go();
+    this.loadNews(true);this.loadApod();this.loadLaunches();this.loadOtd();
+    this.pollIss();this.issTimer=setInterval(()=>this.pollIss(),10000);
+  }
+  componentWillUnmount(){try{this.mq.removeEventListener('change',this.onMq);}catch(e){}document.removeEventListener('error',this.onImgErr,true);[this.timer,this.poll,this.issTimer].forEach(clearInterval);[this.tt,this.pt,this.pt2].forEach(clearTimeout);}
+  async loadImgs(o){
+    try{const j=await (await fetch('https://images-api.nasa.gov/search?media_type=image&q='+encodeURIComponent(o.q))).json();
+      const arr=(j.collection.items||[]).filter(i=>i.links&&i.links[0]).slice(0,12).map(i=>({src:i.links[0].href,title:(i.data&&i.data[0]&&i.data[0].title)||''}));
+      this.setState(s=>({imgs:{...s.imgs,[o.id]:arr}}));
+    }catch(e){}
+  }
+  async loadNews(reset){
+    const term=(NF.find(f=>f[0]===this.state.nf)||NF[0])[1];
+    const url=reset?'https://api.spaceflightnewsapi.net/v4/articles/?limit=12'+(term?'&search='+encodeURIComponent(term):''):this.state.newsNext;
+    if(!url)return;
+    this.setState({newsLoading:true,newsErr:false,...(reset?{news:[]}:{})});
+    try{const j=await (await fetch(url)).json();this.setState(s=>({news:reset?j.results:[...s.news,...j.results],newsNext:j.next,newsLoading:false}));}
+    catch(e){this.setState({newsLoading:false,newsErr:true});}
+  }
+  async loadApod(){try{const j=await (await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')).json();if(j.error||j.code)throw 0;this.setState({apod:j});}catch(e){this.setState({apodErr:true});}}
+  async loadLaunches(){try{const j=await (await fetch('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=6&mode=list')).json();if(!j.results)throw 0;this.setState({launches:j.results});}catch(e){this.setState({launchErr:true});}}
+  async loadOtd(){
+    const d=new Date(),mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+    try{const j=await (await fetch('https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/'+mm+'/'+dd)).json();
+      const ev=(j.events||[]).filter(e=>SPACE_RE.test(e.text)).slice(0,5).map(e=>{const pg=(e.pages||[]).find(p=>p.thumbnail);return{year:e.year,text:e.text,img:pg&&pg.thumbnail.source};});
+      if(ev.length)this.setState({otd:ev});else this.setState({otd:OTD_FALLBACK,otdFallback:true});
+    }catch(e){this.setState({otd:OTD_FALLBACK,otdFallback:true});}
+  }
+  async pollIss(){
+    try{const j=await (await fetch('https://api.wheretheiss.at/v1/satellites/25544')).json();if(j.latitude==null)return;
+      this.setState({iss:j});
+      if(this.state.issAlerts){const L=this.state.loc||DEF_LOC;const dist=hav(L.lat,L.lon,j.latitude,j.longitude);
+        if(dist<2000&&!this.state.issNear){this.setState({issNear:true});this.pushNow({title:'The ISS is passing near you',body:'It’s about '+Math.round(dist).toLocaleString()+' km away right now. Look up if it’s dark!',tab:'sky'});}
+        else if(dist>2500&&this.state.issNear)this.setState({issNear:false});}
+    }catch(e){}
+  }
+  async loadWalls(theme){
+    if(this.state.walls[theme])return;const q=(WALL_THEMES.find(t=>t[0]===theme)||WALL_THEMES[0])[1];
+    try{const j=await (await fetch('https://images-api.nasa.gov/search?media_type=image&q='+encodeURIComponent(q))).json();
+      const arr=(j.collection.items||[]).filter(i=>i.links&&i.links[0]&&i.data&&i.data[0]).slice(0,16).map(i=>({src:i.links[0].href,title:i.data[0].title,nasa_id:i.data[0].nasa_id}));
+      this.setState(s=>({walls:{...s.walls,[theme]:arr}}));
+    }catch(e){this.setState(s=>({walls:{...s.walls,[theme]:[]}}));}
+  }
+  async fetchHd(){
+    const w=this.state.wall;if(!w)return;
+    try{const j=await (await fetch('https://images-api.nasa.gov/asset/'+encodeURIComponent(w.nasa_id))).json();
+      const hs=(j.collection.items||[]).map(i=>i.href).filter(u=>/\.(jpe?g|png)$/i.test(u));
+      const hd=hs.find(u=>/~orig/.test(u))||hs.find(u=>/~large/.test(u))||hs[0]||w.src;
+      this.setState({wall:{...w,hd:hd.replace(/^http:/,'https:')}});
+    }catch(e){this.setState({wall:{...w,hd:w.src}});}
+  }
+  bump(d){const st={...this.state.stats};Object.entries(d).forEach(([k,v])=>{st[k]=(st[k]||0)+v;});this.setState({stats:st});LS.set('cosmo_stats',st);}
+  showToast(msg){clearTimeout(this.tt);this.setState({toast:msg});this.tt=setTimeout(()=>this.setState({toast:null}),2600);}
+  pushNow(p){clearTimeout(this.pt2);this.setState({push:p});this.pt2=setTimeout(()=>this.setState({push:null}),6000);}
+  startInter(n,reward){
+    clearInterval(this.timer);this.setState({inter:true,interN:n,reward});
+    this.timer=setInterval(()=>this.setState(s=>{if(s.interN<=1)clearInterval(this.timer);return{interN:Math.max(0,s.interN-1)};}),1000);
+  }
+  openDetail(id){
+    const every=this.props.interstitialEvery??4, ads=this.props.showAds??true;
+    const opens=this.state.opens+1;
+    this.setState({detail:id,opens});
+    const st=this.state.stats;if(!(st.read||[]).includes(id)){const n={...st,read:[...(st.read||[]),id]};this.setState({stats:n});LS.set('cosmo_stats',n);}
+    if(this.detailRef.current)this.detailRef.current.scrollTop=0;
+    if(ads&&every>0&&opens%every===0)this.startInter(3,null);
+  }
+  lv(){return this.state.qs.levels[this.state.qLevel]||{tries:{},cur:0,hints:{}};}
+  setLv(l){const qs={...this.state.qs,levels:{...this.state.qs.levels,[this.state.qLevel]:l}};this.setState({qs});LS.set('cosmo_quiz2',qs);}
+  curQ(){const ids=pickLevel(this.state.qs.day,this.state.qLevel);return QUIZ[ids[this.lv().cur]];}
+  finishLevel(tries){
+    const s=this.state,ids=pickLevel(s.qs.day,s.qLevel),d=s.qs.day,st=s.streak;
+    const score=ids.filter((id,k)=>(tries[k]||[])[0]===QUIZ[id][2]).length;
+    const count=st.last===d?st.count:(st.last===d-1?st.count+1:1);const ns={count,best:Math.max(st.best||0,count),last:d};
+    this.setState({streak:ns});LS.set('cosmo_streak',ns);
+    this.bump({xp:2,quizzes:1,perfect:score===5?1:0,hard:s.qLevel===3?1:0});
+  }
+  answer(i){
+    const l=this.lv(),q=this.curQ();if(!q)return;
+    const t=l.tries[l.cur]||[];if(t.includes(q[2])||t.includes(i))return;
+    const tries={...l.tries,[l.cur]:[...t,i]};this.setLv({...l,tries});
+    if(i===q[2]){if(!t.length)this.bump({xp:this.state.qLevel});if(l.cur===4)this.finishLevel(tries);}
+  }
+  closeInter(){
+    const s=this.state,r=s.reward;
+    if(r==='hint'){const l=this.lv(),q=this.curQ();if(q){const tried=l.tries[l.cur]||[];const wrong=[0,1,2,3].filter(x=>x!==q[2]&&!tried.includes(x));const g=rng(s.qs.day*7+l.cur);wrong.sort(()=>g()-.5);this.setLv({...l,hints:{...(l.hints||{}),[l.cur]:wrong.slice(0,2)}});}}
+    if(r==='skip'){const l=this.lv(),q=this.curQ();if(q){const tries={...l.tries,[l.cur]:[-1,q[2]]};this.setLv({...l,tries,cur:l.cur+1});if(l.cur===4)this.finishLevel(tries);}}
+    if(r==='wall')this.fetchHd();
+    this.setState({inter:false,reward:null});
+  }
+  toggleTopic(id){const X=this.txt();const sv=this.state.saved;const has=sv.topics.includes(id);const n={...sv,topics:has?sv.topics.filter(x=>x!==id):[id,...sv.topics]};this.setState({saved:n});LS.set('cosmo_saved',n);this.showToast(has?X.tRemoved:X.tSaved);}
+  toggleArticle(a){const X=this.txt();const sv=this.state.saved;const has=sv.articles.some(x=>x.id===a.id);const slim={id:a.id,title:a.title,image_url:a.image_url,news_site:a.news_site,published_at:a.published_at,summary:a.summary,url:a.url};const n={...sv,articles:has?sv.articles.filter(x=>x.id!==a.id):[slim,...sv.articles]};this.setState({saved:n});LS.set('cosmo_saved',n);this.showToast(has?X.tRemoved:X.tStory);}
+  toggleRemind(l){const X=this.txt();
+    const r={...this.state.reminders};
+    if(r[l.id]){delete r[l.id];this.showToast(X.tRemOff);}
+    else{r[l.id]={id:l.id,name:l.name,net:l.net};this.showToast(X.tRemSet);clearTimeout(this.pt);
+      this.pt=setTimeout(()=>this.pushNow({title:l.name+' launches in 1 hour',body:'Tap to follow the countdown. (Preview of the alert you’ll get.)',tab:'today'}),3000);}
+    this.setState({reminders:r});LS.set('cosmo_remind',r);
+  }
+  async checkLatest(force){
+    try{const j=await (await fetch('https://api.spaceflightnewsapi.net/v4/articles/?limit=1')).json();const a=j.results&&j.results[0];if(!a)return;
+      if(force||a.id>this.state.lastSeen){const had=this.state.lastSeen;this.setState({lastSeen:a.id});LS.set('cosmo_lastseen',a.id);
+        if(force||had)this.pushNow({title:'Breaking · '+a.news_site,body:a.title,article:a});}
+    }catch(e){}
+  }
+  startPolling(){clearInterval(this.poll);this.poll=setInterval(()=>this.checkLatest(false),120000);}
+  toggleAlerts(){const X=this.txt();
+    const on=!this.state.alerts;this.setState({alerts:on});LS.set('cosmo_newsalerts',on);
+    if(on){this.showToast(X.tNewsOn);this.startPolling();clearTimeout(this.pt);this.pt=setTimeout(()=>this.checkLatest(true),3000);}
+    else{clearInterval(this.poll);this.showToast(X.tNewsOff);}
+  }
+  toggleIssAlerts(){const X=this.txt();const on=!this.state.issAlerts;this.setState({issAlerts:on,issNear:false});LS.set('cosmo_issalerts',on);this.showToast(on?X.tIssOn:X.tIssOff);}
+  locate(){const X=this.txt();
+    if(!navigator.geolocation)return this.showToast('Location not available on this device');
+    navigator.geolocation.getCurrentPosition(p=>{const loc={lat:p.coords.latitude,lon:p.coords.longitude,name:'Your location'};this.setState({loc});LS.set('cosmo_loc',loc);this.showToast(X.tLoc);},
+      ()=>this.showToast(X.tNoLoc),{timeout:8000});
+  }
+  wrap(x,text,maxW){const words=String(text).split(' ');const lines=[];let line='';words.forEach(w=>{const t=line?line+' '+w:w;if(x.measureText(t).width>maxW&&line){lines.push(line);line=w;}else line=t;});if(line)lines.push(line);return lines;}
+  async share(kicker,title,sub){
+    const c=document.createElement('canvas');c.width=1080;c.height=1350;const x=c.getContext('2d');
+    x.fillStyle='#07080c';x.fillRect(0,0,1080,1350);
+    const g=rng(7);for(let i=0;i<140;i++){x.fillStyle='rgba(255,255,255,'+(0.15+g()*0.5)+')';x.beginPath();x.arc(g()*1080,g()*1350,g()*2+0.4,0,7);x.fill();}
+    x.save();x.translate(110,190);x.rotate(Math.PI/4);x.fillStyle='#f0b46a';x.fillRect(-12,-12,24,24);x.restore();
+    try{await document.fonts.ready;}catch(e){}
+    x.fillStyle='#f0b46a';x.font='500 32px "IBM Plex Mono", monospace';x.fillText(String(kicker).toUpperCase().slice(0,52),150,202);
+    x.fillStyle='#eceef3';x.font='700 84px "Space Grotesk", sans-serif';let y=380;this.wrap(x,title,860).slice(0,6).forEach(l=>{x.fillText(l,110,y);y+=98;});
+    x.fillStyle='#c9ccd4';x.font='400 42px "Space Grotesk", sans-serif';y+=30;this.wrap(x,sub,860).slice(0,5).forEach(l=>{x.fillText(l,110,y);y+=58;});
+    x.fillStyle='#8a90a0';x.font='500 30px "IBM Plex Mono", monospace';x.fillText('COSMOPEDIA · space in your pocket',110,1250);
+    const blob=await new Promise(r=>c.toBlob(r,'image/png'));if(!blob)return;
+    const file=new File([blob],'cosmopedia.png',{type:'image/png'});
+    try{if(navigator.canShare&&navigator.canShare({files:[file]}))await navigator.share({files:[file],title:'Cosmopedia',text:title});
+      else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cosmopedia.png';document.body.appendChild(a);a.click();a.remove();this.showToast('Share card downloaded');}
+      this.bump({shares:1});
+    }catch(e){}
+  }
+  goSub(sub){this.setState({tab:'more',sub,detail:null});if(sub==='walls')this.loadWalls(this.state.wallTheme);}
+  objs(){const k=this.state.lang+':'+OBJ.length+':'+LOADED[this.state.lang];if(this._objK!==k){this._objK=k;this._objs=OBJ.map(o=>locObj(o,this.state.lang));this._qz=QUIZ.map((q,i)=>locQuiz(q,i,this.state.lang));}return this._objs;}
+  qz(){this.objs();return this._qz;}
+  txt(){const lang=this.state.lang,X=window.COSMO_TX||{};return Object.assign({},TX.en,X.en||{},TX[lang]||{},X[lang]||{});}
+  obj(o){o=locObj(o,this.state.lang);const im=this.state.imgs[o.id];const img=im&&im[0]&&im[0].src;const X=this.txt();return{...o,catLabel:(X.cats||{})[o.cat]||o.cat,img,hasImg:!!img,open:()=>this.openDetail(o.id)};}
+  skyCalc(loc){
+    const k=loc.lat.toFixed(2)+','+loc.lon.toFixed(2)+','+new Date().getHours();
+    if(this._skyK!==k){this._skyK=k;this._sky=window.Astro.tonight(loc.lat,loc.lon,new Date());}
+    return this._sky;
+  }
+  renderVals(){
+    const s=this.state, ads=this.props.showAds??true, tx=this.txt(), A_=s.astroReady&&window.Astro;
+    LOCALE=tx.locale||'en';
+    const OB=this.objs(), QZ=this.qz(), CL=c=>(tx.cats||{})[c]||c;
+    const ql=s.q.trim().toLowerCase();
+    const list=OB.filter(o=>(s.cat==='All'||o.cat===s.cat)&&(!ql||(o.name+' '+o.tagline+' '+o.cat).toLowerCase().includes(ql))).map(o=>this.obj(o));
+    const day=Math.floor(Date.now()/864e5);
+    const featured=OB.length?this.obj(OB[day%OB.length]):{};
+    const newsItems=[];
+    s.news.forEach((a,i)=>{
+      if(ads&&i>0&&i%5===0)newsItems.push({isAd:true,isArticle:false});
+      newsItems.push({isAd:false,isArticle:true,title:a.title,img:a.image_url,hasImg:!!a.image_url,site:a.news_site,ago:ago(a.published_at),open:()=>this.setState({article:a})});
+    });
+    let detail=null;
+    if(s.detail){const o=OB.find(x=>x.id===s.detail);if(o){const im=s.imgs[o.id]||[];const sv=s.saved.topics.includes(o.id);
+      detail={...o,catLabel:CL(o.cat),saved:sv,notSaved:!sv,toggleSave:()=>this.toggleTopic(o.id),share:()=>this.share(CL(o.cat)+' · '+o.name,(o.dyk||[])[0]||o.tagline,o.tagline),
+        sections:(o.sections||[]).map(([hh,p],i)=>({h:hh,p,num:String(i+1).padStart(2,'0')})),dyk:(o.dyk||[]).map(t=>({t})),hasDyk:!!(o.dyk&&o.dyk.length),
+        related:OB.filter(x=>x.cat===o.cat&&x.id!==o.id).map(x=>this.obj(x)),hasRelated:OB.some(x=>x.cat===o.cat&&x.id!==o.id),
+        hero:im[0]&&im[0].src,hasHero:!!im[0],heroBg:im[0]?'url("'+im[0].src+'")':'none',hasGallery:im.length>1,gallery:im.slice(1,10).map(g=>({src:g.src,open:()=>this.setState({lightbox:g})}))};}}
+    const Ar=s.article;const aSaved=!!Ar&&s.saved.articles.some(x=>x.id===Ar.id);
+    const ap=s.apod;
+    const apod=ap?{title:ap.title,text:ap.explanation,img:ap.media_type==='image'?ap.url:null,hasImg:ap.media_type==='image',isVideo:ap.media_type!=='image',url:ap.url,open:()=>this.setState({lightbox:{src:ap.hdurl||ap.url,title:ap.title}})}
+      :{title:s.apodErr?'Picture unavailable':'Loading today’s picture…',text:s.apodErr?'NASA’s free demo key has hit its hourly limit. Add your own free key from api.nasa.gov before you publish.':'',hasImg:false,isVideo:false};
+
+    // quiz
+    const lvl=s.qLevel,L=s.qs.levels[lvl]||{tries:{},cur:0,hints:{}},qday=s.qs.day||DAY();
+    const ids=QZ.length?pickLevel(qday,lvl):[];
+    const cur=Math.min(L.cur,4),q=ids.length?QZ[ids[cur]]:null,tries=L.tries||{},tr=tries[L.cur]||[];
+    const answered=!!q&&tr.includes(q[2]),finished=L.cur>=5,playing=!finished&&!!q,removed=(L.hints||{})[L.cur]||[];
+    const done=Object.keys(tries).filter(k=>ids[k]!=null&&tries[k].includes(QZ[ids[k]][2]));
+    const score=done.filter(k=>tries[k][0]===QZ[ids[k]][2]).length;
+    const tName=id=>(OB.find(o=>o.id===id)||{}).name||'';
+    const mid=new Date();mid.setHours(24,0,0,0);const ms=mid-Date.now();
+    const st=s.streak,streakNow=(st.last===qday||st.last===qday-1)?st.count:0;
+    const quiz={streak:streakNow,best:st.best||0,scoreLabel:done.length?score+'/'+done.length:'–',playing,finished,qnum:cur+1,pct:(done.length/5*100)+'%',
+      question:q?q[0]:'',topicCat:q?CL((OB.find(o=>o.id===q[4])||{}).cat||''):'',
+      levels:LEVELS.map(([n])=>{const label=[tx.lvEasy,tx.lvMedium,tx.lvHard][n-1];const l2=s.qs.levels[n];const fin=l2&&l2.cur>=5;return{label,active:n===lvl,inactive:n!==lvl,status:fin?tx.done:F(tx.xpEach,{n}),pick:()=>this.setState({qLevel:n})};}),
+      answers:q?q[1].map((t,i)=>{let k='normal';if(answered)k=i===q[2]?'correct':'dim';else if(tr.includes(i))k='wrong';else if(removed.includes(i))k='dim';return{t,letter:LETTERS[i],normal:k==='normal',correct:k==='correct',wrong:k==='wrong',dim:k==='dim',pick:()=>{if(k==='normal')this.answer(i);}};}):[],
+      canHint:playing&&!answered&&!removed.length&&ads&&tr.length<2,canSkip:playing&&!answered&&ads,
+      answered:playing&&answered,retrying:playing&&!answered&&tr.length>0,
+      solvedLabel:tr.length<=1?F(tx.correctXp,{n:lvl}):F(tx.gotOnTry,{n:tr.length}),
+      why:q?q[3]:'',nextLabel:L.cur>=4?tx.results:tx.next,next:()=>this.setLv({...L,cur:L.cur+1}),hint:()=>this.startInter(5,'hint'),skip:()=>this.startInter(5,'skip'),
+      score,msg:score===5?tx.msgPerfect:score>=3?tx.msgGood:tx.msgTry,
+      nextIn:Math.floor(ms/36e5)+'h '+Math.floor(ms%36e5/6e4)+'m',
+      share:()=>this.share('Daily space quiz · '+LEVELS[lvl-1][1],'I scored '+score+'/5 today',(streakNow>1?streakNow+'-day streak. ':'')+'Can you beat me?'),
+      review:finished?ids.map((id,i)=>{const qq=QZ[id];const ok=(tries[i]||[])[0]===qq[2];const tn=tName(qq[4]);return{q:qq[0],correct:qq[1][qq[2]],ok,bad:!ok,topic:tn,hasTopic:!!tn,open:()=>this.openDetail(qq[4])};}):[]};
+
+    // rank & badges
+    const xp=s.stats.xp||0;let ri=0;RANKS.forEach((r,i)=>{if(xp>=r[1])ri=i;});
+    const nextR=RANKS[ri+1];
+    const savedCount=s.saved.topics.length+s.saved.articles.length;
+    const earned={first:s.stats.quizzes>=1,perfect:s.stats.perfect>=1,hard:s.stats.hard>=1,streak3:(st.best||0)>=3,streak7:(st.best||0)>=7,reader:(s.stats.read||[]).length>=10,collector:savedCount>=5,sky:s.stats.sky>=1,iss:s.stats.iss>=1,share:s.stats.shares>=1};
+    const badgeCount=Object.values(earned).filter(Boolean).length;
+    const RN=tx.ranks||RANKS.map(r=>r[0]);const rank={name:RN[ri],xp,badgeCount:badgeCount+'/'+BADGES.length,pct:nextR?Math.round((xp-RANKS[ri][1])/(nextR[1]-RANKS[ri][1])*100)+'%':'100%',toNext:nextR?F(tx.toNext,{n:nextR[1]-xp,r:RN[ri+1]}):tx.topRank};
+
+    // sky
+    const loc=s.loc||DEF_LOC;let sky={place:loc.name,coords:loc.lat.toFixed(2)+'°, '+loc.lon.toFixed(2)+'°',lat:loc.lat.toFixed(3),lon:loc.lon.toFixed(3),locate:()=>this.locate(),noDark:false,hasDark:false,planets:[],none:false};
+    let moonNow={name:'',illum:'',halfLeft:'50%',ellW:'0%',ellC:'#232733',nextFull:'',age:''},moonNext=[],moonDays=[];
+    if(A_){
+      const t=this.skyCalc(loc);
+      const mp=A_.moonPhase(new Date());
+      moonNow={...moonDisc(mp.frac),name:(tx.phases||{})[mp.name]||mp.name,illum:Math.round(mp.illum*100)+'%',age:mp.age.toFixed(1),dayOf:F(tx.dayOf,{n:mp.age.toFixed(1)}),nextFull:fmtD(A_.nextPhase(new Date(),14.77))};
+      moonNext=[[tx.newMoon,0],[tx.firstQ,7.38],[tx.fullMoonCap,14.77],[tx.lastQ,22.15]].map(([label,ag])=>({label,t:A_.nextPhase(new Date(),ag)})).sort((a,b)=>a.t-b.t).map(n=>({label:n.label,date:n.t.toLocaleDateString(LOCALE,{weekday:'short',month:'short',day:'numeric'})}));
+      for(let i=0;i<30;i++){const d=new Date(Date.now()+i*864e5);const p=A_.moonPhase(d);moonDays.push({...moonDisc(p.frac),label:i===0?tx.todayWord:d.toLocaleDateString(LOCALE,{month:'numeric',day:'numeric'})});}
+      const vis=t.bodies.filter(b=>b.id!=='moon'&&b.first).sort((a,b)=>b.best-a.best);
+      const whenOf=b=>b.span>0.75?tx.allNight:(b.first-t.darkStart<36e5?tx.evening+' '+fmtT(b.first)+'–'+fmtT(b.last):(t.darkEnd-b.last<36e5?tx.beforeDawn+' '+fmtT(b.first)+'–'+fmtT(b.last):fmtT(b.first)+'–'+fmtT(b.last)));
+      sky={...sky,noDark:t.noDark,hasDark:!t.noDark,darkStart:t.noDark?'':fmtT(t.darkStart),darkEnd:t.noDark?'':fmtT(t.darkEnd),moonIllum:Math.round(mp.illum*100)+'%',
+        planets:vis.map(b=>({name:tName(b.id)||b.id,color:PCOL[b.id],when:whenOf(b),dir:A_.compass(b.az),alt:Math.round(b.best),eye:(b.id==='uranus'||b.id==='neptune')?tx.telescope:tx.nakedEye,open:()=>this.openDetail(b.id)})),
+        none:!t.noDark&&!vis.length,
+        share:()=>this.share('Tonight’s sky · '+loc.name.replace(' (default)',''),vis.length?vis.slice(0,4).map(b=>tName(b.id)).join(', ')+(vis.length>1?' are':' is')+' up tonight':'Clear skies tonight','Moon '+Math.round(mp.illum*100)+'% lit · '+mp.name)};
+    }
+    const I=s.iss;const iss=I?{pos:I.latitude.toFixed(1)+'°, '+I.longitude.toFixed(1)+'°',alt:Math.round(I.altitude)+' km',speed:Math.round(I.velocity).toLocaleString()+' km/h',dist:Math.round(hav(loc.lat,loc.lon,I.latitude,I.longitude)).toLocaleString()+' km',status:I.visibility==='daylight'?tx.issSun:tx.issShadow}:{pos:'—',alt:'—',speed:'—',dist:'—',status:tx.issConnecting};
+
+    // solar
+    let solar={orbits:s.solarView==='orbits',sizes:s.solarView==='sizes',rings:[],planets:[],sel:{},offset:s.solarOff,onOffset:e=>this.setState({solarOff:+e.target.value}),dateLabel:'',sizeList:[]};
+    if(A_){
+      const date=new Date(Date.now()+s.solarOff*864e5),J=A_.jd(date),E=A_.helio('earth',J);
+      const ps=PLANETS.map(([id,name,color,rad,yr],i)=>{const hp=A_.helio(id,J),lon=Math.atan2(hp.y,hp.x),r=26+i*19,sel=id===s.solarSel;
+        return{id,name:(OB.find(o=>o.id===id)||{}).name||name,color,yr,hp,isSel:sel,x:(165+r*Math.cos(lon)).toFixed(1)+'px',y:(165-r*Math.sin(lon)).toFixed(1)+'px',s:(sel?16:(i>=4?13:10))+'px',pick:()=>this.setState({solarSel:id})};});
+      const sp=ps.find(p=>p.isSel)||ps[2];
+      const fe=sp.id==='earth'?'—':(Math.hypot(sp.hp.x-E.x,sp.hp.y-E.y,sp.hp.z-E.z)*149.6).toFixed(0)+'M km';
+      solar={...solar,rings:PLANETS.map((_,i)=>({d:((26+i*19)*2)+'px'})),planets:ps,
+        sel:{name:sp.name,color:sp.color,au:Math.hypot(sp.hp.x,sp.hp.y,sp.hp.z).toFixed(2)+' AU',fromEarth:fe,year:sp.yr<1?Math.round(sp.yr*365.25)+' days':sp.yr+' yrs',open:()=>this.openDetail(sp.id)},
+        dateLabel:date.toLocaleDateString(LOCALE,{month:'short',day:'numeric',year:'numeric'})+(s.solarOff?'':' · '+tx.todayWord),
+        sizeList:PLANETS.map(([id,name,color,rad])=>({name:(OB.find(o=>o.id===id)||{}).name||name,color,px:Math.max(4,rad/69911*150).toFixed(1)+'px',km:(rad*2).toLocaleString()+' km',open:()=>this.openDetail(id)}))};
+    }
+
+    const savedTopics=s.saved.topics.map(id=>OB.find(o=>o.id===id)).filter(Boolean).map(o=>this.obj(o));
+    const savedArticles=s.saved.articles.map(a=>({title:a.title,img:a.image_url,hasImg:!!a.image_url,site:a.news_site,ago:ago(a.published_at),open:()=>this.setState({article:a})}));
+    const reminders=Object.values(s.reminders).map(r=>({name:r.name,when:new Date(r.net).toLocaleString(LOCALE,{month:'short',day:'numeric',hour:'numeric',minute:'2-digit'}),remove:()=>this.toggleRemind(r)}));
+    const W=s.wall;
+    const kg=+s.kg||0;
+    const nowISO=new Date().toISOString().slice(0,10);
+    const sub=s.sub,more=s.tab==='more';
+
+    return{
+      tx,
+      isExplore:s.tab==='explore',isNews:s.tab==='news',isToday:s.tab==='today',isQuiz:s.tab==='quiz',isSky:s.tab==='sky',
+      isMoreHome:more&&!sub,isSaved:more&&sub==='saved',isSolar:more&&sub==='solar',isWalls:more&&sub==='walls',isWeight:more&&sub==='weight',isMoon:more&&sub==='moon',isBadges:more&&sub==='badges',isLang:more&&sub==='lang',isTheme:more&&sub==='theme',phoneRef:this.phoneRef,
+      themes:[['system',tx.themeSystem,tx.themeSystemSub],['light',tx.themeLight,tx.themeLightSub],['dark',tx.themeDark,tx.themeDarkSub]].map(([id,name,sub3])=>({name,sub:sub3,active:s.theme===id,inactive:s.theme!==id,pick:()=>{this.setState({theme:id});LS.set('cosmo_theme',id);}})),
+      back:()=>this.setState(s.tab==='quiz'?{tab:'more',sub:null}:{sub:null}),
+      tabs:['explore','news','today','sky','more'].map(id=>{const active=s.tab===id;return{id,label:{explore:tx.explore,news:tx.news,today:tx.today,sky:tx.sky,more:tx.more}[id],
+        isExplore:id==='explore',isNews:id==='news',isToday:id==='today',isSky:id==='sky',isMore:id==='more',
+        pillBg:active?'rgba(240,180,106,.14)':'transparent',iconColor:active?'var(--amber)':'var(--muted)',fontWeight:active?600:500,textColor:active?'var(--text)':'var(--muted)',
+        go:()=>{this.setState({tab:id,sub:null});if(id==='sky'){this.bump({sky:1,iss:s.iss?1:0});if(!s.loc&&!this.askedLoc){this.askedLoc=true;this.locate();}}}};}),
+      cats:CATS.map(c=>({label:CL(c),active:s.cat===c,inactive:s.cat!==c,pick:()=>this.setState({cat:c})})),
+      q:s.q,onSearch:e=>this.setState({q:e.target.value}),
+      objCount:OB.length,objects:list,exploreFeed:list.flatMap((o,i)=>(ads&&i>0&&i%6===0)?[{isAd:true,isObj:false},{...o,isAd:false,isObj:true}]:[{...o,isAd:false,isObj:true}]),noResults:OB.length>0&&list.length===0,
+      showFeatured:s.cat==='All'&&!ql,featured,
+      newsFilters:NF.map(([l])=>({label:l,active:s.nf===l,inactive:s.nf!==l,pick:()=>this.setState({nf:l},()=>this.loadNews(true))})),
+      newsItems,newsLoading:s.newsLoading,newsErr:s.newsErr,canLoadMore:!!s.newsNext&&!s.newsLoading,
+      loadMore:()=>this.loadNews(false),refreshNews:()=>this.loadNews(true),
+      hasArticle:!!Ar,article:Ar?{title:Ar.title,img:Ar.image_url,hasImg:!!Ar.image_url,bg:Ar.image_url?'url("'+Ar.image_url+'")':'none',site:Ar.news_site,date:fmt(Ar.published_at),summary:Ar.summary,url:Ar.url,saved:aSaved,notSaved:!aSaved,toggleSave:()=>this.toggleArticle(Ar)}:{},
+      closeArticle:()=>this.setState({article:null}),
+      hasDetail:!!detail,detail:detail||{},closeDetail:()=>this.setState({detail:null}),detailRef:this.detailRef,
+      hasLightbox:!!s.lightbox,lightbox:s.lightbox?{...s.lightbox,bg:'url("'+s.lightbox.src+'")'}:{},closeLightbox:()=>this.setState({lightbox:null}),
+      todayLabel:new Date().toLocaleDateString(LOCALE,{weekday:'long',month:'long',day:'numeric'}),
+      apod,launchErr:s.launchErr,featuredImg:featured.hasImg?[{bg:'url("'+featured.img+'")'}]:[],apodImg:apod.hasImg?[{bg:'url("'+apod.img+'")',open:apod.open}]:[],
+      launches:s.launches.map(l=>{const im=typeof l.image==='string'?l.image:(l.image&&l.image.thumbnail_url);const rm=!!s.reminders[l.id];return{name:l.name,provider:(l.lsp_name||(l.launch_service_provider&&l.launch_service_provider.name)||''),pad:(l.location||(l.pad&&l.pad.location&&l.pad.location.name)||'').split(',')[0],when:new Date(l.net).toLocaleDateString(undefined,{month:'short',day:'numeric'}),status:(l.status&&(l.status.abbrev||l.status.name))||'',img:im,hasImg:!!im,bg:im?'url("'+im+'")':'none',reminded:rm,notReminded:!rm,remind:()=>this.toggleRemind(l)};}),
+      moonNow,moonNext,moonDays,openMoon:()=>this.goSub('moon'),
+      eclipses:ECLIPSES.filter(e=>e[0]>=nowISO).slice(0,5).map(([d,type,where])=>{const dt=new Date(d+'T12:00:00');return{type,where,day:dt.getDate(),mon:dt.toLocaleDateString(LOCALE,{month:'short'}).toUpperCase(),year:dt.getFullYear()};}),
+      otd:(s.otd||[]).map(e=>({year:e.year,text:e.text,img:e.img,hasImg:!!e.img,ago:(new Date().getFullYear()-e.year)+' '+tx.yearsAgo})),otdLoading:!s.otd,otdFallback:s.otdFallback,
+      quiz,rank,openBadges:()=>this.goSub('badges'),
+      ranks:RANKS.map(([n0,x2],i)=>({name:RN[i]||n0,xp:x2,reached:xp>=x2,locked:xp<x2})),
+      badges:BADGES.map(([id,name,desc],i)=>{const tb=(tx.badges||[])[i];return{name:tb?tb[0]:name,desc:tb?tb[1]:desc,earned:!!earned[id],locked:!earned[id]};}),
+      sky,iss,
+      solar,solarViews:[['orbits',tx.liveOrbits],['sizes',tx.sizeCmp]].map(([id,label])=>({label,active:s.solarView===id,inactive:s.solarView!==id,pick:()=>this.setState({solarView:id})})),
+      wallThemes:WALL_THEMES.map(([l])=>({label:l,active:s.wallTheme===l,inactive:s.wallTheme!==l,pick:()=>{this.setState({wallTheme:l});this.loadWalls(l);}})),
+      walls:(s.walls[s.wallTheme]||[]).map(w=>({src:w.src,open:()=>this.setState({wall:w})})),wallsLoading:!s.walls[s.wallTheme],
+      hasWall:!!W,wall:W?{src:W.src,bg:'url("'+W.src+'")',title:W.title,hd:W.hd,hasHd:!!W.hd,noHd:!W.hd,dlLabel:ads?tx.dlAd:tx.dl,download:()=>{if(ads)this.startInter(5,'wall');else this.fetchHd();}}:{},closeWall:()=>this.setState({wall:null}),
+      weight:{kg:s.kg,onKg:e=>{this.setState({kg:e.target.value});LS.set('cosmo_kg',e.target.value);},
+        rows:GRAV.map(([name,gv,id])=>({name,val:(kg*gv).toFixed(1)+' kg',pct:Math.min(100,gv/2.6*100).toFixed(1)+'%',open:()=>this.openDetail(id)})),
+        share:()=>this.share('Weight on other worlds','On Mars I’d weigh just '+(kg*.379).toFixed(1)+' kg','On Jupiter: '+(kg*2.528).toFixed(1)+' kg · On the Moon: '+(kg*.166).toFixed(1)+' kg')},
+      langs:LANGS.map(([id,name,native])=>({name,native,active:s.lang===id,inactive:s.lang!==id,pick:()=>{this.setState({lang:id});LS.set('cosmo_lang',id);loadLang(id,()=>{this._objK=null;this.forceUpdate();});}})),
+      moreItems:[['quiz',tx.quizTitle,tx.mQuizSub],['saved',tx.mSaved,tx.mSavedSub],['solar',tx.mSolar,tx.mSolarSub],['moon',tx.mMoon,tx.mMoonSub],['walls',tx.mWalls,tx.mWallsSub],['weight',tx.mWeight,tx.mWeightSub],['badges',tx.mBadges,tx.mBadgesSub]].map(([id,label,sub2])=>({label,sub:sub2,go:()=>id==='quiz'?this.setState({tab:'quiz',sub:null}):this.goSub(id)})),
+      settingsItems:[['theme',tx.appearance,s.theme==='system'?tx.themeSystem:s.theme==='light'?tx.themeLight:tx.themeDark],['lang',tx.mLang,(LANGS.find(l=>l[0]===s.lang)||LANGS[0])[2]]].map(([id,label,sub2])=>({label,sub:sub2,go:()=>this.goSub(id)})),
+      savedTopics,savedArticles,reminders,savedTopicCount:savedTopics.length,savedArticleCount:savedArticles.length,
+      hasSavedTopics:savedTopics.length>0,hasSavedArticles:savedArticles.length>0,hasReminders:reminders.length>0,
+      savedEmpty:!savedTopics.length&&!savedArticles.length&&!reminders.length,
+      showAds:ads,
+      interActive:s.inter,interDone:s.inter&&s.interN===0,interWaiting:s.inter&&s.interN>0,interN:s.interN,interCloseIn:F(tx.closeIn,{n:s.interN}),
+      interLabel:s.reward?'REWARDED AD':'INTERSTITIAL AD',
+      interText:s.reward==='hint'?'rewarded video ad · hint unlocks when it ends':s.reward==='skip'?'rewarded video ad · skip unlocks when it ends':s.reward==='wall'?'rewarded video ad · HD download unlocks when it ends':'full-screen AdMob interstitial',
+      interCloseLabel:s.reward==='hint'?'Claim hint ✓':s.reward==='skip'?'Skip question ✓':s.reward==='wall'?'Get HD image ✓':'Close ✕',
+      closeInter:()=>this.closeInter(),
+      hasToast:!!s.toast,toast:s.toast||'',hasPush:!!s.push,push:s.push||{},
+      pushTap:()=>{const p=s.push||{};this.setState({push:null,...(p.article?{article:p.article,tab:'news',sub:null}:{}),...(p.tab?{tab:p.tab,sub:null}:{})});},
+      alertsOn:s.alerts,alertsOnOff:!s.alerts,alertsOff:!s.alerts,toggleAlerts:()=>this.toggleAlerts(),
+      issAlertsOn:s.issAlerts,issAlertsOnOff:!s.issAlerts,toggleIssAlerts:()=>this.toggleIssAlerts()
+    };
+  }
+}
+</script>
+</body>
+</html>
