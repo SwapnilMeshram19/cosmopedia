@@ -67,6 +67,12 @@ if(window.CosmoAdsNative){
           </sc-for>
         </div>
 
+        <sc-if value="{{ showAds }}" hint-placeholder-val="{{ true }}">
+          <div style="min-height:50px">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1294432140413899" data-ad-slot="8882698429" data-ad-format="horizontal"></ins>
+          </div>
+        </sc-if>
+
         <sc-if value="{{ showFeatured }}" hint-placeholder-val="{{ true }}">
           <div onClick="{{ featured.open }}" style="position:relative;height:220px;border-radius:22px;overflow:hidden;cursor:pointer;background:repeating-linear-gradient(135deg,var(--stripe1) 0 8px,var(--surface) 8px 16px)">
             <sc-for list="{{ featuredImg }}" as="im" hint-placeholder-count="0"><div style="position:absolute;inset:0;background-image:{{ im.bg }};background-size:cover;background-position:center"></div></sc-for>
@@ -623,12 +629,6 @@ if(window.CosmoAdsNative){
       </div>
     </sc-if>
   </div>
-
-  <sc-if value="{{ showAds }}" hint-placeholder-val="{{ true }}">
-    <div style="flex:none;height:54px;margin:0 12px 6px;overflow:hidden">
-      <ins class="adsbygoogle" style="display:block;width:100%;height:54px" data-ad-client="ca-pub-1294432140413899" data-ad-slot="8882698429" data-ad-format="auto" data-full-width-responsive="true"></ins>
-    </div>
-  </sc-if>
 
   <div style="flex:none;height:78px;border-top:1px solid rgba(var(--ink),.07);display:grid;grid-template-columns:repeat(5,1fr);padding-bottom:12px;padding-top:8px;background:var(--nav)">
     <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
