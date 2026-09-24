@@ -14,7 +14,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#050609;font-family:'Space Grotesk',system-ui,sans-serif;color:#eceef3}
+body{margin:0;background:#050609;font-family:'Space Grotesk',system-ui,sans-serif;color:#eceef3;height:100%;overflow:hidden}
+html{height:100%}
+#dc-root{height:100%}
 a{color:#f0b46a;text-decoration:none}a:hover{color:#ffd29c}
 *{box-sizing:border-box}
 ::-webkit-scrollbar{width:0;height:0}
@@ -38,9 +40,9 @@ if(window.CosmoAdsNative){
 }
 </script>
 </helmet>
-<div style="min-height:100vh">
+<div style="height:100%">
 
-<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);width:100%;height:100vh;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column">
+<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);width:100%;height:100%;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column">
 
   <div style="flex:1;overflow-y:auto;overflow-x:hidden">
 
@@ -860,7 +862,7 @@ class Component extends DCLogic {
     const go=()=>{if(!window.COSMOS||!window.Astro||!window.COSMO_TX)return setTimeout(go,60);OBJ=DATA();QUIZ=window.COSMOS_QUIZ||[];this.setState({astroReady:true});OBJ.forEach(o=>this.loadImgs(o));};go();
     this.loadNews(true);this.loadApod();this.loadLaunches();this.loadOtd();
     this.pollIss();this.issTimer=setInterval(()=>this.pollIss(),10000);
-    const pushAds=()=>{try{document.querySelectorAll('ins.adsbygoogle:not([data-ad-status])').forEach(()=>{(window.adsbygoogle=window.adsbygoogle||[]).push({});});}catch(e){}};
+    const pushAds=()=>{try{document.querySelectorAll('ins.adsbygoogle:not([data-ad-pushed])').forEach(el=>{el.dataset.adPushed='1';(window.adsbygoogle=window.adsbygoogle||[]).push({});});}catch(e){}};
     pushAds();
     this.adsObserver=new MutationObserver(pushAds);
     this.adsObserver.observe(document.body,{childList:true,subtree:true});
