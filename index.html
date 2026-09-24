@@ -854,7 +854,7 @@ class Component extends DCLogic {
     try{const j=await (await fetch(url)).json();this.setState(s=>({news:reset?j.results:[...s.news,...j.results],newsNext:j.next,newsLoading:false}));}
     catch(e){this.setState({newsLoading:false,newsErr:true});}
   }
-  async loadApod(){try{const j=await (await fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY')).json();if(j.error||j.code)throw 0;this.setState({apod:j});}catch(e){this.setState({apodErr:true});}}
+  async loadApod(){try{const j=await (await fetch('https://api.nasa.gov/planetary/apod?api_key=LaZXOccZs5noPnHh44gM4Bw556zJoK5yoRMASAbD')).json();if(j.error||j.code)throw 0;this.setState({apod:j});}catch(e){this.setState({apodErr:true});}}
   async loadLaunches(){try{const j=await (await fetch('https://ll.thespacedevs.com/2.2.0/launch/upcoming/?limit=6&mode=list')).json();if(!j.results)throw 0;this.setState({launches:j.results});}catch(e){this.setState({launchErr:true});}}
   async loadOtd(){
     const d=new Date(),mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
