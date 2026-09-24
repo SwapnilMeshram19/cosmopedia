@@ -3,6 +3,9 @@
       "target": {
         "namespace": "android_app",
         "package_name": "com.sam.cosmopedia",
-        "sha256_cert_fingerprints": ["0D:89:3B:31:9E:36:2E:3D:4D:04:91:16:52:2E:5F:6D:92:95:9D:78:F3:98:A4:4A:19:C7:BB:D6:80:00:31:98"]
+        "sha256_cert_fingerprints": [
+          "0D:89:3B:31:9E:36:2E:3D:4D:04:91:16:52:2E:5F:6D:92:95:9D:78:F3:98:A4:4A:19:C7:BB:D6:80:00:31:98",
+          "38:89:D5:8A:4B:75:83:B0:88:97:7E:86:09:AC:CD:6F:E7:46:A3:02:03:E2:71:E5:26:89:81:08:84:E9:87:5B"
+        ]
       }
     }]
