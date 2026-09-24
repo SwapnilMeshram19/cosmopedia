@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.sam.cosmopedia",
+        "sha256_cert_fingerprints": ["0D:89:3B:31:9E:36:2E:3D:4D:04:91:16:52:2E:5F:6D:92:95:9D:78:F3:98:A4:4A:19:C7:BB:D6:80:00:31:98"]
+      }
+    }]
