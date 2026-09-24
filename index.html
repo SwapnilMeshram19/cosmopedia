@@ -14,9 +14,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-body{margin:0;background:#050609;font-family:'Space Grotesk',system-ui,sans-serif;color:#eceef3;height:100%;overflow:hidden}
-html{height:100%}
-#dc-root{height:100%}
+body{margin:0;background:#050609;font-family:'Space Grotesk',system-ui,sans-serif;color:#eceef3}
 a{color:#f0b46a;text-decoration:none}a:hover{color:#ffd29c}
 *{box-sizing:border-box}
 ::-webkit-scrollbar{width:0;height:0}
@@ -40,9 +38,9 @@ if(window.CosmoAdsNative){
 }
 </script>
 </helmet>
-<div style="height:100%">
+<div style="position:fixed;inset:0">
 
-<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);width:100%;height:100%;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column">
+<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);position:absolute;inset:0;background:var(--bg);overflow:hidden;display:flex;flex-direction:column">
 
   <div style="flex:1;overflow-y:auto;overflow-x:hidden">
 
@@ -84,8 +82,8 @@ if(window.CosmoAdsNative){
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
           <sc-for list="{{ exploreFeed }}" as="o" hint-placeholder-count="6">
             <sc-if value="{{ o.isAd }}">
-              <div style="grid-column:1/-1;height:100px;overflow:hidden">
-                <ins class="adsbygoogle" style="display:block;width:100%;height:100px" data-ad-client="ca-pub-1294432140413899" data-ad-slot="8882698429" data-ad-format="auto" data-full-width-responsive="true"></ins>
+              <div style="grid-column:1/-1;min-height:100px">
+                <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1294432140413899" data-ad-slot="8882698429" data-ad-format="rectangle"></ins>
               </div>
             </sc-if>
             <sc-if value="{{ o.isObj }}">
@@ -671,8 +669,8 @@ if(window.CosmoAdsNative){
           </sc-for>
         </div>
         <sc-if value="{{ showAds }}">
-          <div style="height:100px;overflow:hidden">
-            <ins class="adsbygoogle" style="display:block;width:100%;height:100px" data-ad-client="ca-pub-1294432140413899" data-ad-slot="8882698429" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          <div style="min-height:100px">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-1294432140413899" data-ad-slot="8882698429" data-ad-format="rectangle"></ins>
           </div>
         </sc-if>
         <sc-for list="{{ detail.sections }}" as="sec" hint-placeholder-count="3">
