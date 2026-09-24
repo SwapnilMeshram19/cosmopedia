@@ -2,7 +2,9 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#07080c">
+<link rel="manifest" href="./manifest.json">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -21,13 +23,9 @@ input::placeholder{color:#6b7180}
 <script src="astro.js"></script>
 <script src="i18n.js"></script>
 </helmet>
-<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;gap:48px;flex-wrap:wrap">
+<div style="min-height:100vh">
 
-<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);width:390px;height:844px;border-radius:46px;border:10px solid #1a1c23;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 30px 80px rgba(0,0,0,.6)">
-
-  <div style="height:34px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 26px;font:500 12px 'IBM Plex Mono',monospace;color:var(--text2)">
-    <span>9:41</span><span style="width:90px;height:22px;border-radius:12px;background:#000"></span><span>5G ▮▮▮</span>
-  </div>
+<div data-screen-label="Cosmopedia phone" ref="{{ phoneRef }}" style="--bg:#07080c;--bg-rgb:7,8,12;--surface:#11131a;--surface2:#0d0f14;--cell:#0f1117;--nav:#0a0b10;--hover:#161922;--text:#eceef3;--text2:#c9ccd4;--text3:#b8bcc6;--muted:#8a90a0;--muted2:#6b7180;--stripe1:#151821;--ink:255,255,255;--moon-dark:#232733;--toggle-off:#2a2e38;--line-strong:#3a3f4c;--err-bg:#1a1216;--err:#ffb3b3;--amber:#f0b46a;--blue:#8fb8ff;--green:#7fd6a0;--red:#ff9b9b;--on-accent:#1a1206;--on-blue:#08101f;color:var(--text);width:100%;height:100vh;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column">
 
   <div style="flex:1;overflow-y:auto;overflow-x:hidden">
 
@@ -772,22 +770,6 @@ input::placeholder{color:#6b7180}
       </div>
     </div>
   </sc-if>
-</div>
-
-<div style="max-width:320px;display:flex;flex-direction:column;gap:14px;font-size:14px;line-height:1.55;color:#9aa0ad">
-  <div style="font-size:22px;font-weight:700;color:#eceef3">Cosmopedia</div>
-  <div>Space encyclopedia + live news. Every image and headline is pulled live from free public APIs. None of them need a paid key.</div>
-  <div style="display:flex;flex-direction:column;gap:6px;font:400 12px 'IBM Plex Mono',monospace">
-    <span><span style="color:#f0b46a">Explore</span> · NASA Image Library</span>
-    <span><span style="color:#8fb8ff">News</span> · Spaceflight News API</span>
-    <span><span style="color:#eceef3">Today</span> · NASA APOD + Launch Library 2</span>
-    <span><span style="color:#7fd6a0">Quiz</span> · 5 new questions daily, streaks</span>
-    <span><span style="color:#eceef3">Saved</span> · topics, stories, launch alerts</span>
-    <span><span style="color:#8fb8ff">Alerts</span> · breaking-news + launch notifications</span>
-    <span><span style="color:#8fb8ff">Sky</span> · planets tonight (on-device maths) + ISS live</span>
-    <span><span style="color:#eceef3">More</span> · solar system, moon, wallpapers, weight, badges, language</span>
-  </div>
-  <div>Ad slots: bottom banner, a native ad every 5 stories, and a full-screen ad every few encyclopedia entries you open, and an optional rewarded ad for quiz hints (usually the best-paying ad type). You can change these in Tweaks.</div>
 </div>
 </div>
 </x-dc>
